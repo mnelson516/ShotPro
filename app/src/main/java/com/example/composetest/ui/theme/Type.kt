@@ -24,11 +24,23 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
+    h6 = TextStyle(
+        fontFamily = gothicA1,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        color = WhiteGray
+    ),
     h5 = TextStyle(
         fontFamily = gothicA1,
         fontWeight = FontWeight.Black,
-        fontSize = 16.sp,
+        fontSize = 18.sp,
         color = Color.White
-    )
+    ),
+    h4 = TextStyle(
+        fontFamily = gothicA1,
+        fontWeight = FontWeight.Black,
+        fontSize = 22.sp,
+        color = Color.White
+    ),
 
 )
