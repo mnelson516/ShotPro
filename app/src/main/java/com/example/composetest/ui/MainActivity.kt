@@ -1,6 +1,7 @@
 package com.example.composetest.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +72,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreenView() {
     val navController = rememberNavController()
+    val context = LocalContext.current
     Scaffold(
         bottomBar = {
             BottomAppBar(
@@ -90,6 +93,9 @@ fun MainScreenView() {
                 shape = CircleShape,
                 backgroundColor = NeonOrange,
                 onClick = {
+                    context.startActivity(
+                        Intent(context, AddWorkoutActivity::class.java)
+                    )
 
                 },
                 contentColor = Color.White
@@ -159,8 +165,7 @@ fun BottomNavigationBar(navController: NavController) {
                     }
                 },
                 selected = currentRoute?.hierarchy?.any { it.route == it.route } == true,
-
-                selectedContentColor = Color(R.color.purple_700),
+                selectedContentColor = Color(R.color.purple_200),
                 unselectedContentColor = Color.White.copy(alpha = 0.4f),
                 onClick = {
                     it.screen_route.let { it1 ->
@@ -171,7 +176,6 @@ fun BottomNavigationBar(navController: NavController) {
                                 }
 
                                 launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
                                 restoreState = true
                             }
                         }

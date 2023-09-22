@@ -1,6 +1,8 @@
 package com.example.composetest.ui
 
+import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +48,7 @@ fun HomeScreen() {
             Column {
                 Spacer(modifier = Modifier.height(24.dp))
                 Greeting()
-                FeaturedWorkoutsCard()
+                LogWorkoutsCard()
                 FeatureText()
             }
         }
@@ -53,8 +57,6 @@ fun HomeScreen() {
 
 @Composable
 fun Greeting() {
-    var quoteGenerator = QuoteGenerator()
-    var quotePair = quoteGenerator.generateRandomQuote()
     Row(
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
@@ -65,33 +67,17 @@ fun Greeting() {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Welcome Back!",
+                text = stringResource(id = R.string.welcome_back),
                 style = Typography.h5,
                 fontSize = 16.sp
             )
-//            Text(
-//                text = quotePair.first,
-//                fontSize = 16.sp,
-//                style = Typography.h6,
-//                textAlign = TextAlign.Center,
-//                modifier = Modifier
-//                    .padding(top = 6.dp)
-//            )
-//            Text(
-//                text = "- " + quotePair.second,
-//                fontSize = 16.sp,
-//                style = Typography.h6,
-//                textAlign = TextAlign.Center,
-//
-//                modifier = Modifier
-//                    .padding(top = 4.dp)
-//            )
         }
     }
 }
 
 @Composable
-fun FeaturedWorkoutsCard() {
+fun LogWorkoutsCard() {
+    val context = LocalContext.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -101,15 +87,20 @@ fun FeaturedWorkoutsCard() {
             .background(NeonOrange)
             .padding(horizontal = 15.dp, vertical = 20.dp)
             .fillMaxWidth()
+            .clickable {
+                context.startActivity(
+                    Intent(context, AddWorkoutActivity::class.java)
+                )
+            }
     ) {
         Column {
             Text(
-                text = "Log Workout",
+                text = stringResource(id = R.string.log_workout),
                 style = Typography.h4,
                 fontSize = 18.sp
             )
             Text(
-                text = "Log your own workout from scratch",
+                text = stringResource(id = R.string.log_own_workout),
                 style = Typography.h5,
                 color = Color.White,
                 fontSize = 12.sp
@@ -125,7 +116,7 @@ fun FeaturedWorkoutsCard() {
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.forward_arrow),
-                contentDescription = "Go to Featured Workouts",
+                contentDescription = "Go to add workout screen",
                 modifier = Modifier.size(16.dp)
             )
         }
@@ -135,14 +126,14 @@ fun FeaturedWorkoutsCard() {
 @Composable
 fun FeatureText() {
     Text(
-        text = "Feature Workouts",
+        text = stringResource(id = R.string.feature_workouts),
         style = Typography.h5,
         fontSize = 20.sp,
         modifier = Modifier
             .padding(start = 20.dp)
     )
     Text(
-        text = "Sample workouts from some of your favorite pros",
+        text = stringResource(id = R.string.feature_workout_desc),
         style = Typography.h5,
         color = Color.White,
         fontSize = 12.sp,
