@@ -46,6 +46,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.composetest.R
 import com.example.composetest.ui.theme.ComposeTestTheme
 import com.example.composetest.ui.theme.NeonOrange
+import com.example.composetest.ui.theme.SecondaryBlue
+import com.example.composetest.ui.theme.Teal200
 import com.example.composetest.util.BottomNavItem
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -80,7 +82,7 @@ fun MainScreenView() {
                     .height(65.dp)
                     .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
                 cutoutShape = CircleShape,
-                //backgroundColor = Color.White,
+                backgroundColor = SecondaryBlue,
                 elevation = 22.dp
             ) {
                 BottomNavigationBar(navController = navController)
@@ -142,7 +144,8 @@ fun BottomNavigationBar(navController: NavController) {
             .padding(12.dp, 0.dp, 12.dp, 0.dp)
             .height(100.dp),
         //backgroundColor = Color.White,
-        elevation = 0.dp
+        elevation = 0.dp,
+        backgroundColor = SecondaryBlue
     ) {
         items.forEach {
             BottomNavigationItem(
