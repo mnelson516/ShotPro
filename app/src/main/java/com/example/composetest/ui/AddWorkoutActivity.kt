@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -91,8 +92,9 @@ class AddWorkoutActivity: ComponentActivity() {
     fun WorkoutScreen() {
         var showPopup by remember { mutableStateOf(false) }
 
-        if (showPopup) {
+        if (true) {
             InputDialog()
+            showPopup = false
         }
 
         Scaffold(
@@ -140,18 +142,20 @@ class AddWorkoutActivity: ComponentActivity() {
                     .padding(16.dp),
                 shape = RoundedCornerShape(16.dp),
             ) {
-
-
                 Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 16.dp)
                 ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_close),
+                        contentDescription = "Close Popup",
+                        modifier = Modifier
+                            .align(Alignment.End)
+                    )
 
                     Text(
                         text = stringResource(id = R.string.add_exercise),
-                        fontSize = 16.sp,
+                        fontSize = 20.sp,
                         modifier = Modifier.padding(bottom = 12.dp)
                     )
 
@@ -203,6 +207,18 @@ class AddWorkoutActivity: ComponentActivity() {
                         },
                         label = {
                             Text("Shot Location")
+                        }
+                    )
+
+                    Button(
+                        modifier = Modifier.fillMaxWidth(1f),
+                        onClick = {
+
+                        },
+                        content =  {
+                            Text(
+                                "Add Exercise"
+                            )
                         }
                     )
                 }
