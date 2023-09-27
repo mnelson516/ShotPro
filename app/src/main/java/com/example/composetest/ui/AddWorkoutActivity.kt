@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,7 +39,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +56,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,9 +98,126 @@ class AddWorkoutActivity: ComponentActivity() {
     fun WorkoutScreen() {
         var showPopup by remember { mutableStateOf(false) }
 
-        if (true) {
-            InputDialog()
-            showPopup = false
+        if (showPopup) {
+            var exerciseName by remember { mutableStateOf("") }
+            var shotsMade by remember { mutableStateOf("") }
+            var totalShots by remember { mutableStateOf("") }
+            val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
+            val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
+
+            Dialog(
+                onDismissRequest = {
+                    showPopup = false
+                }) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 16.dp)
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_close),
+                            contentDescription = "Close Popup",
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .clickable {
+                                    showPopup = false
+                                }
+                        )
+
+                        Text(
+                            text = stringResource(id = R.string.add_exercise),
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(bottom = 12.dp)
+                        )
+
+
+
+                        OutlinedTextField(
+                            value = exerciseName,
+                            maxLines = 1,
+                            modifier = Modifier.padding(bottom = 12.dp),
+                            onValueChange = {
+                                exerciseName = it
+                            },
+                            label = {
+                                Text("Exercise Name")
+                            }
+                        )
+
+                        OutlinedTextField(
+                            value = shotsMade,
+                            maxLines = 1,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.padding(bottom = 12.dp),
+                            onValueChange = {
+                                shotsMade = it
+                            },
+                            label = {
+                                Text("Shots Made")
+                            }
+                        )
+
+                        OutlinedTextField(
+                            value = totalShots,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .padding(bottom = 12.dp),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            onValueChange = {
+                                totalShots = it
+                            },
+                            label = {
+                                Text("Total Shots")
+                            }
+                        )
+
+                        Text(
+                            "Angle",
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        LocationDropDown(
+                            list = spinnerLocationList,
+                            preselected = spinnerLocationList.first(),
+                            onSelectionChanged = {},
+                            modifier = Modifier
+                                .padding(bottom = 12.dp))
+
+                        Text(
+                            "Distance",
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+
+                        LocationDropDown(
+                            list = spinnerRangeList,
+                            preselected = spinnerRangeList.first(),
+                            onSelectionChanged = {},
+                            modifier = Modifier
+                                .padding(bottom = 16.dp))
+
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth(1f)
+                                .height(48.dp),
+                            onClick = {
+
+                            },
+                            content =  {
+                                Text(
+                                    "Add Exercise"
+                                )
+                            }
+                        )
+                    }
+
+                }
+            }
         }
 
         Scaffold(
@@ -125,110 +248,6 @@ class AddWorkoutActivity: ComponentActivity() {
     }
 
     @Composable
-    fun InputDialog() {
-        var exerciseName by remember { mutableStateOf("") }
-        var shotsMade by remember { mutableStateOf("") }
-        var totalShots by remember { mutableStateOf("") }
-        var shotLocation by remember { mutableStateOf("") }
-
-        Dialog(
-            onDismissRequest = {
-
-        }) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_close),
-                        contentDescription = "Close Popup",
-                        modifier = Modifier
-                            .align(Alignment.End)
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.add_exercise),
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = exerciseName,
-                        maxLines = 1,
-                        modifier = Modifier.padding(bottom = 12.dp),
-                        onValueChange = {
-                            exerciseName = it
-                        },
-                        label = {
-                            Text("Exercise Name")
-                        }
-                    )
-
-                    OutlinedTextField(
-                        value = shotsMade,
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.padding(bottom = 12.dp),
-                        onValueChange = {
-                            shotsMade = it
-                        },
-                        label = {
-                            Text("Shots Made")
-                        }
-                    )
-
-                    OutlinedTextField(
-                        value = totalShots,
-                        maxLines = 1,
-                        modifier = Modifier
-                            .padding(bottom = 12.dp),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        onValueChange = {
-                            totalShots = it
-                        },
-                        label = {
-                            Text("Total Shots")
-                        }
-                    )
-
-                    OutlinedTextField(
-                        value = shotLocation,
-                        maxLines = 1,
-                        modifier = Modifier.padding(bottom = 12.dp),
-                        onValueChange = {
-                            shotLocation = it
-                        },
-                        label = {
-                            Text("Shot Location")
-                        }
-                    )
-
-                    Button(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        onClick = {
-
-                        },
-                        content =  {
-                            Text(
-                                "Add Exercise"
-                            )
-                        }
-                    )
-                }
-
-            }
-        }
-    }
-
-
-    @Composable
     fun TopBar() {
         val activity = LocalContext.current as? Activity
         Row(
@@ -252,6 +271,66 @@ class AddWorkoutActivity: ComponentActivity() {
                 modifier = Modifier
                     .padding(start = 8.dp)
             )
+        }
+    }
+
+    @Composable
+    fun LocationDropDown(
+        list: List<String>,
+        preselected: String,
+        onSelectionChanged: (myData: String) -> Unit,
+        modifier: Modifier = Modifier
+    ) {
+
+        var selected by remember { mutableStateOf(preselected) }
+        var expanded by remember { mutableStateOf(false) } // initial value
+
+        OutlinedCard(
+            modifier = modifier.clickable {
+                expanded = !expanded
+            }
+        ) {
+
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+
+                Text(
+                    text = selected,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                Icon(Icons.Outlined.ArrowDropDown, null, modifier = Modifier.padding(8.dp))
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.wrapContentWidth()
+                ) {
+                    list.forEach { listEntry ->
+
+                        DropdownMenuItem(
+                            onClick = {
+                                selected = listEntry
+                                expanded = false
+                                onSelectionChanged(selected)
+                            },
+                            text = {
+                                Text(
+                                    text = listEntry,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.Start)
+                                )
+                            },
+                        )
+                    }
+                }
+
+            }
         }
     }
 
