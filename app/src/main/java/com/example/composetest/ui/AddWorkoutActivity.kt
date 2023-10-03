@@ -1,7 +1,6 @@
 package com.example.composetest.ui
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Window
@@ -20,19 +19,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -42,10 +39,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,7 +54,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,6 +66,7 @@ import com.example.composetest.ui.theme.NeonOrange
 import com.example.composetest.ui.theme.Typography
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class AddWorkoutActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,18 +90,26 @@ class AddWorkoutActivity: ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
     @Composable
     @Preview
     fun WorkoutScreen() {
         var showPopup by remember { mutableStateOf(false) }
+        val _exerciseList = remember { MutableStateFlow(listOf<Exercise>()) }
+        val exerciseList by remember { _exerciseList }.collectAsState()
+
 
         if (showPopup) {
+
+            val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
+            val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
             var exerciseName by remember { mutableStateOf("") }
             var shotsMade by remember { mutableStateOf("") }
             var totalShots by remember { mutableStateOf("") }
-            val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
-            val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
+            var isShotNumError by remember { mutableStateOf(false)}
+            var isFieldNotFilledError by remember { mutableStateOf(false)}
+            var locationSpinnerString by remember { mutableStateOf(spinnerLocationList.first()) }
+            var rangeSpinnerString by remember { mutableStateOf(spinnerRangeList.first()) }
+
 
             Dialog(
                 onDismissRequest = {
@@ -166,16 +172,36 @@ class AddWorkoutActivity: ComponentActivity() {
                         OutlinedTextField(
                             value = totalShots,
                             maxLines = 1,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier
                                 .padding(bottom = 12.dp),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             onValueChange = {
                                 totalShots = it
+                                if (totalShots.isNotEmpty()) {
+                                    isShotNumError = shotsMade.toInt() > totalShots.toInt()
+                                }
                             },
+                            trailingIcon = {
+                                if (isShotNumError)
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_error),
+                                        contentDescription = "Error Icon",
+                                        tint = MaterialTheme.colors.error)
+                            },
+                            isError = isShotNumError,
                             label = {
                                 Text("Total Shots")
                             }
                         )
+                        if (isShotNumError) {
+                            Text(
+                                text = "Cannot have more made shots than total shots",
+                                color = MaterialTheme.colors.error,
+                                style = MaterialTheme.typography.caption,
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp),
+                            )
+                        }
 
                         Text(
                             "Angle",
@@ -185,7 +211,9 @@ class AddWorkoutActivity: ComponentActivity() {
                         LocationDropDown(
                             list = spinnerLocationList,
                             preselected = spinnerLocationList.first(),
-                            onSelectionChanged = {},
+                            onSelectionChanged = {
+                               locationSpinnerString = it
+                            },
                             modifier = Modifier
                                 .padding(bottom = 12.dp))
 
@@ -197,7 +225,9 @@ class AddWorkoutActivity: ComponentActivity() {
                         LocationDropDown(
                             list = spinnerRangeList,
                             preselected = spinnerRangeList.first(),
-                            onSelectionChanged = {},
+                            onSelectionChanged = {
+                                rangeSpinnerString = it
+                            },
                             modifier = Modifier
                                 .padding(bottom = 16.dp))
 
@@ -206,7 +236,25 @@ class AddWorkoutActivity: ComponentActivity() {
                                 .fillMaxWidth(1f)
                                 .height(48.dp),
                             onClick = {
-
+                                if (exerciseName.isEmpty() || shotsMade.isEmpty() || totalShots.isEmpty()) {
+                                    isFieldNotFilledError = true
+                                }
+                                else if (shotsMade.toInt() > totalShots.toInt()) {
+                                    isShotNumError = true
+                                } else {
+                                        val newList = ArrayList(exerciseList)
+                                        newList.add(
+                                            Exercise(
+                                                name = exerciseName,
+                                                shotsMade = shotsMade.toInt(),
+                                                totalShots = totalShots.toInt(),
+                                                location = locationSpinnerString,
+                                                range = rangeSpinnerString
+                                            )
+                                        )
+                                        _exerciseList.value = newList
+                                        showPopup = false
+                                }
                             },
                             content =  {
                                 Text(
@@ -214,8 +262,26 @@ class AddWorkoutActivity: ComponentActivity() {
                                 )
                             }
                         )
-                    }
 
+                        if (isFieldNotFilledError) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp)
+                            ) {
+                                Icon (
+                                    painterResource(id = R.drawable.ic_error),
+                                    contentDescription = "Error Icon",
+                                    tint = MaterialTheme.colors.error
+                                )
+                                Text(
+                                    text = "Must Fill Out all Fields",
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -242,6 +308,7 @@ class AddWorkoutActivity: ComponentActivity() {
                 Column {
                     Spacer(modifier = Modifier.height(24.dp))
                     TopBar()
+                    ExerciseList(exercises = exerciseList)
                 }
             }
         }
@@ -335,12 +402,22 @@ class AddWorkoutActivity: ComponentActivity() {
     }
 
     @Composable
-    fun ExerciseColumn() {
+    fun ExerciseList(exercises: List<Exercise>) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(16.dp)
         ) {
-
+            if (exercises.isEmpty()) {
+                item {
+                    Text(
+                        text = "No Exercises Added Yet",
+                        style = Typography.h5)
+                }
+            } else {
+                items(exercises) {exercise ->
+                    ExerciseCard(exercise = exercise)
+                }
+            }
         }
     }
 
