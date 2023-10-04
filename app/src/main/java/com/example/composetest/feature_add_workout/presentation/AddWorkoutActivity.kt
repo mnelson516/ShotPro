@@ -247,6 +247,7 @@ class AddWorkoutActivity: ComponentActivity() {
                                         val newList = ArrayList(exerciseList)
                                         newList.add(
                                             Exercise(
+                                                date = "",
                                                 name = exerciseName,
                                                 shotsMade = shotsMade.toInt(),
                                                 totalShots = totalShots.toInt(),
