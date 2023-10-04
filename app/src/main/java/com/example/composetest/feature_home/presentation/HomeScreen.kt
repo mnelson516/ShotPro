@@ -1,4 +1,4 @@
-package com.example.composetest.ui
+package com.example.composetest.feature_home.presentation
 
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -31,10 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetest.R
-import com.example.composetest.ui.theme.NavyBlue
-import com.example.composetest.ui.theme.NeonOrange
-import com.example.composetest.ui.theme.Typography
-import com.example.composetest.util.QuoteGenerator
+import com.example.composetest.theme.NavyBlue
+import com.example.composetest.theme.NeonOrange
+import com.example.composetest.theme.Typography
+import com.example.composetest.feature_add_workout.presentation.AddWorkoutActivity
 
 @Composable
 @Preview

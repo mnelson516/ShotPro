@@ -1,4 +1,4 @@
-package com.example.composetest.ui
+package com.example.composetest.feature_home.presentation
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -22,19 +22,16 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -44,11 +41,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composetest.R
-import com.example.composetest.ui.theme.ComposeTestTheme
-import com.example.composetest.ui.theme.NeonOrange
-import com.example.composetest.ui.theme.SecondaryBlue
-import com.example.composetest.ui.theme.Teal200
+import com.example.composetest.theme.ComposeTestTheme
+import com.example.composetest.theme.NeonOrange
+import com.example.composetest.theme.SecondaryBlue
 import com.example.composetest.util.BottomNavItem
+import com.example.composetest.feature_add_workout.presentation.AddWorkoutActivity
+import com.example.composetest.feature_history.presentation.HistoryScreen
+import com.example.composetest.feature_insights.presentation.InsightsScreen
+import com.example.composetest.feature_settings.presentation.SettingsScreen
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 

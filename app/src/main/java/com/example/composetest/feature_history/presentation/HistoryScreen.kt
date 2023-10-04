@@ -1,4 +1,4 @@
-package com.example.composetest.ui
+package com.example.composetest.feature_history.presentation
 
 import androidx.compose.runtime.Composable
 

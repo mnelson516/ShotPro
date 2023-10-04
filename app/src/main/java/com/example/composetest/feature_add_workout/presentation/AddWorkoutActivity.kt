@@ -1,4 +1,4 @@
-package com.example.composetest.ui
+package com.example.composetest.feature_add_workout.presentation
 
 import android.app.Activity
 import android.os.Bundle
@@ -7,10 +7,8 @@ import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,15 +35,16 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,17 +57,16 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.composetest.R
 import com.example.composetest.model.Exercise
-import com.example.composetest.ui.theme.NavyBlue
-import com.example.composetest.ui.theme.NeonOrange
-import com.example.composetest.ui.theme.SecondaryBlue
-import com.example.composetest.ui.theme.Typography
+import com.example.composetest.theme.NavyBlue
+import com.example.composetest.theme.NeonOrange
+import com.example.composetest.theme.SecondaryBlue
+import com.example.composetest.theme.Typography
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -315,13 +312,14 @@ class AddWorkoutActivity: ComponentActivity() {
                 TopBar()
                 if (exerciseList.isEmpty()) {
                     Text(
-                        text = "No Exercises Added Yet",
+                        text = stringResource(id = R.string.no_exercises_added),
                         style = Typography.h6,
                         fontSize = 18.sp,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 24.dp))
                 } else {
                     ExerciseList(exercises = exerciseList)
+                    SaveButton(exercises = exerciseList)
                 }
             }
         }
@@ -500,8 +498,18 @@ class AddWorkoutActivity: ComponentActivity() {
                     fontSize = 14.sp
                 )
             }
-
         }
+    }
+
+    @Composable
+    fun SaveButton(exercises: List<Exercise>) {
+        ExtendedFloatingActionButton(
+            onClick = {
+
+            },
+            icon = { Icon(Icons.Filled.Edit, stringResource(id = R.string.save_workout)) },
+            text = { Text(text = stringResource(id = R.string.save_workout)) },
+        )
     }
 }
 
