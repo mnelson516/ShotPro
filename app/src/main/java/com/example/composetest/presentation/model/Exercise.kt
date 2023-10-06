@@ -1,4 +1,4 @@
-package com.example.composetest.model
+package com.example.composetest.presentation.model
 
 data class Exercise (
     val date: String,

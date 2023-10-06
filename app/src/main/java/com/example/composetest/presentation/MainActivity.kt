@@ -1,4 +1,4 @@
-package com.example.composetest.feature_home.presentation
+package com.example.composetest.presentation
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -41,14 +41,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composetest.R
-import com.example.composetest.theme.ComposeTestTheme
-import com.example.composetest.theme.NeonOrange
-import com.example.composetest.theme.SecondaryBlue
-import com.example.composetest.util.BottomNavItem
-import com.example.composetest.feature_add_workout.presentation.AddWorkoutActivity
-import com.example.composetest.feature_history.presentation.HistoryScreen
-import com.example.composetest.feature_insights.presentation.InsightsScreen
-import com.example.composetest.feature_settings.presentation.SettingsScreen
+import com.example.composetest.presentation.theme.ComposeTestTheme
+import com.example.composetest.presentation.theme.NeonOrange
+import com.example.composetest.presentation.theme.SecondaryBlue
+import com.example.composetest.presentation.util.BottomNavItem
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 

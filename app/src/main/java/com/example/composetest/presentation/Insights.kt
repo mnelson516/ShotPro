@@ -1,4 +1,4 @@
-package com.example.composetest.feature_insights.presentation
+package com.example.composetest.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

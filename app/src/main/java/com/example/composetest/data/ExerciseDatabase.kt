@@ -1,4 +1,4 @@
-package com.example.composetest.database
+package com.example.composetest.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

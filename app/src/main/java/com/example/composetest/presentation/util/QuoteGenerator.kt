@@ -1,4 +1,4 @@
-package com.example.composetest.util
+package com.example.composetest.presentation.util
 
 
 class QuoteGenerator() {

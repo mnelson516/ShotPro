@@ -1,4 +1,4 @@
-package com.example.composetest.feature_settings.presentation
+package com.example.composetest.presentation
 
 import androidx.compose.runtime.Composable
 

@@ -1,4 +1,4 @@
-package com.example.composetest.feature_add_workout.presentation
+package com.example.composetest.presentation
 
 import android.app.Activity
 import android.os.Bundle
@@ -61,17 +61,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.room.Room
 import com.example.composetest.R
-import com.example.composetest.model.Exercise
-import com.example.composetest.theme.NavyBlue
-import com.example.composetest.theme.NeonOrange
-import com.example.composetest.theme.SecondaryBlue
-import com.example.composetest.theme.Typography
+import com.example.composetest.data.ExerciseDatabase
+import com.example.composetest.presentation.model.Exercise
+import com.example.composetest.presentation.theme.NavyBlue
+import com.example.composetest.presentation.theme.NeonOrange
+import com.example.composetest.presentation.theme.SecondaryBlue
+import com.example.composetest.presentation.theme.Typography
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AddWorkoutActivity: ComponentActivity() {
+
+    val db = Room.databaseBuilder(
+        applicationContext,
+        ExerciseDatabase::class.java, "exercises"
+    ).build()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         with(window) {
@@ -446,9 +453,13 @@ class AddWorkoutActivity: ComponentActivity() {
                     fontSize = 16.sp)
                 Icon(
                     imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Edit Button",
+                    contentDescription = "Delete Button",
                     tint = Color.White,
-                    modifier = Modifier.padding(end = 8.dp))
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable {
+
+                        })
             }
 
             Row(

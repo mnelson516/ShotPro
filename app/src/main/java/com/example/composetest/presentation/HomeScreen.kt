@@ -1,4 +1,4 @@
-package com.example.composetest.feature_home.presentation
+package com.example.composetest.presentation
 
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -30,10 +30,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetest.R
-import com.example.composetest.theme.NavyBlue
-import com.example.composetest.theme.NeonOrange
-import com.example.composetest.theme.Typography
-import com.example.composetest.feature_add_workout.presentation.AddWorkoutActivity
+import com.example.composetest.presentation.theme.NavyBlue
+import com.example.composetest.presentation.theme.NeonOrange
+import com.example.composetest.presentation.theme.Typography
 
 @Composable
 @Preview
