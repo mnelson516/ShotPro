@@ -9,6 +9,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AddWorkoutViewModel @Inject constructor(
     private val exerciseRepository: ExerciseRepository
-) {
+) : ViewModel() {
 
 }

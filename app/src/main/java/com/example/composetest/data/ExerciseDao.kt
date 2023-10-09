@@ -9,7 +9,7 @@ import com.example.composetest.presentation.model.Exercise
 interface ExerciseDao {
 
     @Query("SELECT * FROM exercises")
-    fun getNotes(): List<ExerciseEntity>
+    fun getExercises(): List<ExerciseEntity>
 
     @Query("SELECT * FROM exercises WHERE date = :date")
     fun loadAllByDate(date: String): List<ExerciseEntity>
