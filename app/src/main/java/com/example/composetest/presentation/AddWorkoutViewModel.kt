@@ -1,12 +1,14 @@
 package com.example.composetest.presentation
 
 import androidx.lifecycle.ViewModel
+import com.example.composetest.data.ExerciseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 
-
-class AddWorkoutViewModel: ViewModel(
-
+@HiltViewModel
+class AddWorkoutViewModel @Inject constructor(
+    private val exerciseRepository: ExerciseRepository
 ) {
 
 }

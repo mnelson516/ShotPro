@@ -6,6 +6,7 @@ import android.transition.Slide
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -71,14 +72,14 @@ import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 
+@AndroidEntryPoint
 class AddWorkoutActivity: ComponentActivity() {
 
-    val db = Room.databaseBuilder(
-        applicationContext,
-        ExerciseDatabase::class.java, "exercises"
-    ).build()
+    private val exerciseViewModel: AddWorkoutViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         with(window) {
