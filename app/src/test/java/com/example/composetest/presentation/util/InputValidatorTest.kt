@@ -9,6 +9,7 @@ class InputValidatorTest {
     @Test
     fun `valid exercise input happy path`() {
         val result = InputValidator.isValidExerciseInput(
+            "test",
             "1",
             "2"
         )
@@ -18,6 +19,7 @@ class InputValidatorTest {
     @Test
     fun `invalid exercise input empty field`() {
         val result = InputValidator.isValidExerciseInput(
+            "test",
             "",
             "2"
         )
@@ -27,6 +29,7 @@ class InputValidatorTest {
     @Test
     fun `invalid exercise input invalid shots`() {
         val result = InputValidator.isValidExerciseInput(
+            "test",
             "6",
             "2"
         )

@@ -12,10 +12,11 @@ object InputValidator {
      * 2. Shots Made > Shots Taken
      */
     fun isValidExerciseInput(
+        exerciseName: String,
         shotsMade: String,
         shotsTaken: String,
     ) : String {
-        if (shotsMade.isEmpty() || shotsTaken.isEmpty()) return EMPTY_FIELD
+        if (shotsMade.isEmpty() || shotsTaken.isEmpty() || exerciseName.isEmpty()) return EMPTY_FIELD
 
         if (shotsMade.toInt() > shotsTaken.toInt()) return INVALID_INPUT
 

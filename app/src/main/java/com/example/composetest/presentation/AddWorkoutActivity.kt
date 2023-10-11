@@ -71,6 +71,10 @@ import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
+import com.example.composetest.presentation.util.InputValidator
+import com.example.composetest.presentation.util.InputValidator.EMPTY_FIELD
+import com.example.composetest.presentation.util.InputValidator.INVALID_INPUT
+import com.example.composetest.presentation.util.InputValidator.VALID_INPUT
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
@@ -325,23 +329,27 @@ class AddWorkoutActivity: ComponentActivity() {
                             .fillMaxWidth(1f)
                             .height(48.dp),
                         onClick = {
-                            if (exerciseName.isEmpty() || shotsMade.isEmpty() || totalShots.isEmpty()) {
-                                isFieldNotFilledError = true
-                            }
-                            else if (shotsMade.toInt() > totalShots.toInt()) {
-                                isShotNumError = true
-                            } else {
-                                updateExercise(
-                                    Exercise(
-                                        date = "",
-                                        name = exerciseName,
-                                        shotsMade = shotsMade.toInt(),
-                                        totalShots = totalShots.toInt(),
-                                        location = locationSpinnerString,
-                                        range = rangeSpinnerString
+                            when(
+                                InputValidator.isValidExerciseInput(
+                                    exerciseName,
+                                    shotsMade,
+                                    totalShots
+                            )) {
+                                EMPTY_FIELD -> isFieldNotFilledError = true
+                                INVALID_INPUT -> isShotNumError = true
+                                VALID_INPUT ->  {
+                                    updateExercise(
+                                        Exercise(
+                                            date = "",
+                                            name = exerciseName,
+                                            shotsMade = shotsMade.toInt(),
+                                            totalShots = totalShots.toInt(),
+                                            location = locationSpinnerString,
+                                            range = rangeSpinnerString
+                                        )
                                     )
-                                )
-                                showPopup(false)
+                                    showPopup(false)
+                                }
                             }
                         },
                         content =  {
