@@ -48,6 +48,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,197 +105,15 @@ class AddWorkoutActivity: ComponentActivity() {
     @Composable
     @Preview
     fun WorkoutScreen() {
-        var showPopup by remember { mutableStateOf(false) }
-        val _exerciseList = remember { MutableStateFlow(listOf<Exercise>()) }
-        val exerciseList by remember { _exerciseList }.collectAsState()
+        var showPopup by rememberSaveable { mutableStateOf(false) }
+        val exerciseList = rememberSaveable { mutableListOf<Exercise>() }
 
         if (showPopup) {
-
-            val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
-            val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
-            var exerciseName by remember { mutableStateOf("") }
-            var shotsMade by remember { mutableStateOf("") }
-            var totalShots by remember { mutableStateOf("") }
-            var isShotNumError by remember { mutableStateOf(false)}
-            var isFieldNotFilledError by remember { mutableStateOf(false)}
-            var locationSpinnerString by remember { mutableStateOf(spinnerLocationList.first()) }
-            var rangeSpinnerString by remember { mutableStateOf(spinnerRangeList.first()) }
-
-
-            Dialog(
-                onDismissRequest = {
-                    showPopup = false
-                }) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(Alignment.CenterVertically)
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp),
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 16.dp)
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_close),
-                            contentDescription = "Close Popup",
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .clickable {
-                                    showPopup = false
-                                }
-                        )
-
-                        Text(
-                            text = stringResource(id = R.string.add_exercise),
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(bottom = 12.dp)
-                        )
-
-
-
-                        OutlinedTextField(
-                            value = exerciseName,
-                            maxLines = 1,
-                            modifier = Modifier.padding(bottom = 12.dp),
-                            onValueChange = {
-                                exerciseName = it
-                            },
-                            label = {
-                                Text("Exercise Name")
-                            }
-                        )
-
-                        OutlinedTextField(
-                            value = shotsMade,
-                            maxLines = 1,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier.padding(bottom = 12.dp),
-                            onValueChange = {
-                                shotsMade = it
-                            },
-                            label = {
-                                Text("Shots Made")
-                            }
-                        )
-
-                        OutlinedTextField(
-                            value = totalShots,
-                            maxLines = 1,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            modifier = Modifier
-                                .padding(bottom = 12.dp),
-                            onValueChange = {
-                                totalShots = it
-                                if (totalShots.isNotEmpty()) {
-                                    isShotNumError = shotsMade.toInt() > totalShots.toInt()
-                                }
-                            },
-                            trailingIcon = {
-                                if (isShotNumError)
-                                    Icon(
-                                        painterResource(id = R.drawable.ic_error),
-                                        contentDescription = "Error Icon",
-                                        tint = MaterialTheme.colors.error)
-                            },
-                            isError = isShotNumError,
-                            label = {
-                                Text("Total Shots")
-                            }
-                        )
-                        if (isShotNumError) {
-                            Text(
-                                text = "Cannot have more made shots than total shots",
-                                color = MaterialTheme.colors.error,
-                                style = MaterialTheme.typography.caption,
-                                modifier = Modifier
-                                    .padding(bottom = 12.dp),
-                            )
-                        }
-
-                        Text(
-                            "Angle",
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-
-                        LocationDropDown(
-                            list = spinnerLocationList,
-                            preselected = spinnerLocationList.first(),
-                            onSelectionChanged = {
-                               locationSpinnerString = it
-                            },
-                            modifier = Modifier
-                                .padding(bottom = 12.dp))
-
-                        Text(
-                            "Distance",
-                            modifier = Modifier.padding(bottom = 4.dp)
-                        )
-
-                        LocationDropDown(
-                            list = spinnerRangeList,
-                            preselected = spinnerRangeList.first(),
-                            onSelectionChanged = {
-                                rangeSpinnerString = it
-                            },
-                            modifier = Modifier
-                                .padding(bottom = 16.dp))
-
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth(1f)
-                                .height(48.dp),
-                            onClick = {
-                                if (exerciseName.isEmpty() || shotsMade.isEmpty() || totalShots.isEmpty()) {
-                                    isFieldNotFilledError = true
-                                }
-                                else if (shotsMade.toInt() > totalShots.toInt()) {
-                                    isShotNumError = true
-                                } else {
-                                        val newList = ArrayList(exerciseList)
-                                        newList.add(
-                                            Exercise(
-                                                date = "",
-                                                name = exerciseName,
-                                                shotsMade = shotsMade.toInt(),
-                                                totalShots = totalShots.toInt(),
-                                                location = locationSpinnerString,
-                                                range = rangeSpinnerString
-                                            )
-                                        )
-                                        _exerciseList.value = newList
-                                        showPopup = false
-                                }
-                            },
-                            content =  {
-                                Text(
-                                    "Add Exercise"
-                                )
-                            }
-                        )
-
-                        if (isFieldNotFilledError) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(bottom = 12.dp)
-                            ) {
-                                Icon (
-                                    painterResource(id = R.drawable.ic_error),
-                                    contentDescription = "Error Icon",
-                                    tint = MaterialTheme.colors.error
-                                )
-                                Text(
-                                    text = "Must Fill Out all Fields",
-                                    color = MaterialTheme.colors.error,
-                                    style = MaterialTheme.typography.caption,
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            ExerciseDialog(updateExercise = { exercise ->
+                 exerciseList.add(exercise)
+            }, showPopup = { closePopup ->
+                showPopup = closePopup
+            })
         }
 
         Scaffold(
@@ -358,6 +177,200 @@ class AddWorkoutActivity: ComponentActivity() {
                 modifier = Modifier
                     .padding(start = 8.dp)
             )
+        }
+    }
+
+    @Composable
+    fun ExerciseDialog(
+        updateExercise: (Exercise) -> Unit,
+        showPopup: (Boolean) -> Unit
+    ) {
+        val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
+        val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
+        var exerciseName by remember { mutableStateOf("") }
+        var shotsMade by remember { mutableStateOf("") }
+        var totalShots by remember { mutableStateOf("") }
+        var isShotNumError by remember { mutableStateOf(false)}
+        var isFieldNotFilledError by remember { mutableStateOf(false)}
+        var locationSpinnerString by remember { mutableStateOf(spinnerLocationList.first()) }
+        var rangeSpinnerString by remember { mutableStateOf(spinnerRangeList.first()) }
+
+        Dialog(
+            onDismissRequest = {
+                showPopup(false)
+            }) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(Alignment.CenterVertically)
+                    .padding(16.dp),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_close),
+                        contentDescription = "Close Popup",
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .clickable {
+                                showPopup(false)
+                            }
+                    )
+
+                    Text(
+                        text = stringResource(id = R.string.add_exercise),
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(bottom = 12.dp)
+                    )
+
+
+
+                    OutlinedTextField(
+                        value = exerciseName,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .fillMaxWidth(),
+                        onValueChange = {
+                            exerciseName = it
+                        },
+                        label = {
+                            Text("Exercise Name")
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = shotsMade,
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .fillMaxWidth(),
+                        onValueChange = {
+                            shotsMade = it
+                        },
+                        label = {
+                            Text("Shots Made")
+                        }
+                    )
+
+                    OutlinedTextField(
+                        value = totalShots,
+                        maxLines = 1,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier
+                            .padding(bottom = 12.dp)
+                            .fillMaxWidth(),
+                        onValueChange = {
+                            totalShots = it
+                            if (totalShots.isNotEmpty()) {
+                                isShotNumError = shotsMade.toInt() > totalShots.toInt()
+                            }
+                        },
+                        trailingIcon = {
+                            if (isShotNumError)
+                                Icon(
+                                    painterResource(id = R.drawable.ic_error),
+                                    contentDescription = "Error Icon",
+                                    tint = MaterialTheme.colors.error)
+                        },
+                        isError = isShotNumError,
+                        label = {
+                            Text("Total Shots")
+                        }
+                    )
+                    if (isShotNumError) {
+                        Text(
+                            text = "Cannot have more made shots than total shots",
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier
+                                .padding(bottom = 12.dp),
+                        )
+                    }
+
+                    Text(
+                        "Angle",
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    LocationDropDown(
+                        list = spinnerLocationList,
+                        preselected = spinnerLocationList.first(),
+                        onSelectionChanged = {
+                            locationSpinnerString = it
+                        },
+                        modifier = Modifier
+                            .padding(bottom = 12.dp))
+
+                    Text(
+                        "Distance",
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    LocationDropDown(
+                        list = spinnerRangeList,
+                        preselected = spinnerRangeList.first(),
+                        onSelectionChanged = {
+                            rangeSpinnerString = it
+                        },
+                        modifier = Modifier
+                            .padding(bottom = 16.dp))
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth(1f)
+                            .height(48.dp),
+                        onClick = {
+                            if (exerciseName.isEmpty() || shotsMade.isEmpty() || totalShots.isEmpty()) {
+                                isFieldNotFilledError = true
+                            }
+                            else if (shotsMade.toInt() > totalShots.toInt()) {
+                                isShotNumError = true
+                            } else {
+                                updateExercise(
+                                    Exercise(
+                                        date = "",
+                                        name = exerciseName,
+                                        shotsMade = shotsMade.toInt(),
+                                        totalShots = totalShots.toInt(),
+                                        location = locationSpinnerString,
+                                        range = rangeSpinnerString
+                                    )
+                                )
+                                showPopup(false)
+                            }
+                        },
+                        content =  {
+                            Text(
+                                "Add Exercise"
+                            )
+                        }
+                    )
+
+                    if (isFieldNotFilledError) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(bottom = 12.dp, top = 12.dp)
+                        ) {
+                            Icon (
+                                painterResource(id = R.drawable.ic_error),
+                                contentDescription = "Error Icon",
+                                tint = MaterialTheme.colors.error
+                            )
+                            Text(
+                                text = "Must Fill Out all Fields",
+                                color = MaterialTheme.colors.error,
+                                style = MaterialTheme.typography.caption,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 

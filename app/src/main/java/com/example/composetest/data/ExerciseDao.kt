@@ -9,21 +9,21 @@ import com.example.composetest.presentation.model.Exercise
 interface ExerciseDao {
 
     @Query("SELECT * FROM exercises")
-    fun getExercises(): List<ExerciseEntity>
+    suspend fun getExercises(): List<ExerciseEntity>
 
     @Query("SELECT * FROM exercises WHERE date = :date")
-    fun loadAllByDate(date: String): List<ExerciseEntity>
+    suspend fun loadAllByDate(date: String): List<ExerciseEntity>
 
     @Query("SELECT * FROM exercises WHERE location = :location")
-    fun loadAllByLocation(location: String): List<ExerciseEntity>
+    suspend fun loadAllByLocation(location: String): List<ExerciseEntity>
 
     @Query("SELECT * FROM exercises WHERE range = :range")
-    fun loadAllByRange(range: String): List<ExerciseEntity>
+    suspend fun loadAllByRange(range: String): List<ExerciseEntity>
 
     @Query("SELECT * FROM exercises WHERE name = :name")
-    fun loadAllByName(name: String): List<ExerciseEntity>
+    suspend fun loadAllByName(name: String): List<ExerciseEntity>
 
     @Insert
-    fun insertAll(vararg exercises: ExerciseEntity)
+    suspend fun insertAll(exercises: List<ExerciseEntity>)
 
 }
