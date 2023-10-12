@@ -4,9 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.example.composetest.data.ExerciseDao
 import com.example.composetest.data.ExerciseDatabase
-import com.example.composetest.data.ExerciseRepository
-import com.example.composetest.data.ExerciseRepositoryImpl
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

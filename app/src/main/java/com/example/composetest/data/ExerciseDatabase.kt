@@ -2,6 +2,7 @@ package com.example.composetest.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.composetest.domain.ExerciseEntity
 
 @Database(
     entities = [ExerciseEntity::class],

@@ -1,4 +1,4 @@
-package com.example.composetest.data
+package com.example.composetest.domain
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

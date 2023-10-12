@@ -122,15 +122,23 @@ class AddWorkoutActivity: ComponentActivity() {
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    shape = CircleShape,
-                    backgroundColor = NeonOrange,
-                    onClick = {
-                        showPopup = true
-                    },
-                    contentColor = Color.White
+                Row(
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add icon")
+                    if (exerciseList.isNotEmpty()) SaveButton(exercises = exerciseList)
+                    FloatingActionButton(
+                        shape = CircleShape,
+                        backgroundColor = NeonOrange,
+                        onClick = {
+                            showPopup = true
+                        },
+                        contentColor = Color.White,
+                        modifier = Modifier
+                            .padding(start = 14.dp)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add icon")
+                    }
+
                 }
             }
         ) {
@@ -151,7 +159,6 @@ class AddWorkoutActivity: ComponentActivity() {
                             .padding(start = 16.dp, top = 24.dp))
                 } else {
                     ExerciseList(exercises = exerciseList)
-                    SaveButton(exercises = exerciseList)
                 }
             }
         }
@@ -541,8 +548,11 @@ class AddWorkoutActivity: ComponentActivity() {
             onClick = {
 
             },
-            icon = { Icon(Icons.Filled.Edit, stringResource(id = R.string.save_workout)) },
-            text = { Text(text = stringResource(id = R.string.save_workout)) },
+            icon = { Icon(Icons.Filled.Edit, stringResource(id = R.string.save_workout), tint = Color.White) },
+            text = { Text(text = stringResource(id = R.string.save_workout), color = Color.White) },
+            modifier = Modifier,
+            containerColor = NeonOrange,
+            contentColor = Color.White
         )
     }
 }

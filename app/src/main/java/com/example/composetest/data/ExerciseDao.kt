@@ -3,7 +3,7 @@ package com.example.composetest.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.composetest.presentation.model.Exercise
+import com.example.composetest.domain.ExerciseEntity
 
 @Dao
 interface ExerciseDao {
