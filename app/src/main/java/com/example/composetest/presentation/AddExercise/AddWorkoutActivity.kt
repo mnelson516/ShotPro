@@ -1,4 +1,4 @@
-package com.example.composetest.presentation
+package com.example.composetest.presentation.AddExercise
 
 import android.app.Activity
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.transition.Slide
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +37,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -58,14 +59,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.room.Room
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetest.R
-import com.example.composetest.data.ExerciseDatabase
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
@@ -78,12 +80,9 @@ import com.example.composetest.presentation.util.InputValidator.VALID_INPUT
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @AndroidEntryPoint
 class AddWorkoutActivity: ComponentActivity() {
-
-    private val exerciseViewModel: AddWorkoutViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,14 +108,18 @@ class AddWorkoutActivity: ComponentActivity() {
     @Composable
     @Preview
     fun WorkoutScreen() {
-        var showPopup by rememberSaveable { mutableStateOf(false) }
-        val exerciseList = rememberSaveable { mutableListOf<Exercise>() }
+        val viewModel = viewModel<AddWorkoutViewModel>()
+        val state = viewModel.state.value
+        val scaffoldState = rememberScaffoldState()
 
-        if (showPopup) {
-            ExerciseDialog(updateExercise = { exercise ->
-                 exerciseList.add(exercise)
-            }, showPopup = { closePopup ->
-                showPopup = closePopup
+
+        if (state.showPopup) {
+            ExerciseDialog(
+                updateExercise = { exercise ->
+                 viewModel.onEvent(AddExerciseEvent.AddExercise(exercise))
+            }, showPopup = {
+                viewModel.onEvent( AddExerciseEvent.ShowPopup(false))
+
             })
         }
 
@@ -125,12 +128,12 @@ class AddWorkoutActivity: ComponentActivity() {
                 Row(
                     horizontalArrangement = Arrangement.End
                 ) {
-                    if (exerciseList.isNotEmpty()) SaveButton(exercises = exerciseList)
+                    if (state.exercises.isNotEmpty()) SaveButton()
                     FloatingActionButton(
                         shape = CircleShape,
                         backgroundColor = NeonOrange,
                         onClick = {
-                            showPopup = true
+                            viewModel.onEvent(AddExerciseEvent.ShowPopup(true))
                         },
                         contentColor = Color.White,
                         modifier = Modifier
@@ -140,7 +143,8 @@ class AddWorkoutActivity: ComponentActivity() {
                     }
 
                 }
-            }
+            },
+            scaffoldState = scaffoldState
         ) {
             Column(
                 modifier = Modifier
@@ -150,7 +154,7 @@ class AddWorkoutActivity: ComponentActivity() {
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
                 TopBar()
-                if (exerciseList.isEmpty()) {
+                if (state.exercises.isEmpty()) {
                     Text(
                         text = stringResource(id = R.string.no_exercises_added),
                         style = Typography.h6,
@@ -158,7 +162,7 @@ class AddWorkoutActivity: ComponentActivity() {
                         modifier = Modifier
                             .padding(start = 16.dp, top = 24.dp))
                 } else {
-                    ExerciseList(exercises = exerciseList)
+                    ExerciseList(exercises = state.exercises)
                 }
             }
         }
@@ -196,6 +200,7 @@ class AddWorkoutActivity: ComponentActivity() {
         updateExercise: (Exercise) -> Unit,
         showPopup: (Boolean) -> Unit
     ) {
+        val viewModel = viewModel<AddWorkoutViewModel>()
         val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
         val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
         var exerciseName by remember { mutableStateOf("") }
@@ -208,11 +213,11 @@ class AddWorkoutActivity: ComponentActivity() {
 
         Dialog(
             onDismissRequest = {
-                showPopup(false)
+                viewModel.onEvent(AddExerciseEvent.ShowPopup(false))
             }) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .wrapContentHeight(Alignment.CenterVertically)
                     .padding(16.dp),
                 shape = RoundedCornerShape(16.dp),
@@ -227,7 +232,7 @@ class AddWorkoutActivity: ComponentActivity() {
                         modifier = Modifier
                             .align(Alignment.End)
                             .clickable {
-                                showPopup(false)
+                                viewModel.onEvent(AddExerciseEvent.ShowPopup(false))
                             }
                     )
 
@@ -464,6 +469,7 @@ class AddWorkoutActivity: ComponentActivity() {
 
     @Composable
     fun ExerciseCard(exercise: Exercise) {
+        val viewModel = viewModel<AddWorkoutViewModel>()
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
@@ -479,15 +485,18 @@ class AddWorkoutActivity: ComponentActivity() {
                     text = exercise.name,
                     style = Typography.h5,
                     modifier = Modifier.padding(start = 8.dp),
-                    fontSize = 16.sp)
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline
+                )
                 Icon(
-                    imageVector = Icons.Outlined.Edit,
+                    imageVector = Icons.Outlined.Delete,
                     contentDescription = "Delete Button",
                     tint = Color.White,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clickable {
-
+                            viewModel.onEvent(AddExerciseEvent.DeleteExercise(exercise))
                         })
             }
 
@@ -496,14 +505,12 @@ class AddWorkoutActivity: ComponentActivity() {
                     .padding(top = 10.dp)
             ) {
                 Text(
-                    text = exercise.shotsMade.toString(),
+                    text = "Shots: " + exercise.shotsMade.toString() + "/" + exercise.totalShots.toString(),
                     style = Typography.h5,
                     modifier = Modifier.padding(start = 8.dp),
-                    fontSize = 14.sp)
-                Text(
-                    text = "/" + exercise.totalShots.toString(),
-                    style = Typography.h5,
-                    fontSize = 14.sp)
+                    fontSize = 14.sp
+                )
+
             }
 
             Row(
@@ -543,10 +550,11 @@ class AddWorkoutActivity: ComponentActivity() {
     }
 
     @Composable
-    fun SaveButton(exercises: List<Exercise>) {
+    fun SaveButton() {
+        val viewModel = viewModel<AddWorkoutViewModel>()
         ExtendedFloatingActionButton(
             onClick = {
-
+                viewModel.onEvent(AddExerciseEvent.SaveExercises)
             },
             icon = { Icon(Icons.Filled.Edit, stringResource(id = R.string.save_workout), tint = Color.White) },
             text = { Text(text = stringResource(id = R.string.save_workout), color = Color.White) },
