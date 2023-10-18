@@ -14,3 +14,14 @@ fun Exercise.mapToEntity() : ExerciseEntity {
         this.location
     )
 }
+
+fun ExerciseEntity.mapToExercise() : Exercise {
+    return Exercise(
+        this.date,
+        this.name,
+        this.shotsMade,
+        this.totalShots,
+        this.range,
+        this.location
+    )
+}

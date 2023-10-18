@@ -25,12 +25,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composetest.R
 import com.example.composetest.presentation.TitleSection
+import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 
 
 @Composable
 @Preview
 fun HistoryScreen() {
+    val viewModel = viewModel<HistoryViewModel>()
+    val state = viewModel.state.value
     Scaffold {
         Box(modifier = Modifier
             .background(NavyBlue)
@@ -40,7 +43,7 @@ fun HistoryScreen() {
             Column {
                 Spacer(modifier = Modifier.padding(top = 24.dp))
                 HistoryTopBar()
-                FilterSection()
+                FilterSection(state.exercises)
             }
         }
     }
@@ -92,7 +95,9 @@ fun HistoryTopBar() {
 }
 
 @Composable
-fun FilterSection() {
+fun FilterSection(
+    items: List<Exercise>
+) {
 
 }
 
