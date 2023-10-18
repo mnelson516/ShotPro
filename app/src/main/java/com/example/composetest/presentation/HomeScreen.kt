@@ -45,8 +45,8 @@ fun HomeScreen() {
             .fillMaxSize()
         ) {
             Column {
-                Spacer(modifier = Modifier.height(24.dp))
-                Greeting()
+                Spacer(modifier = Modifier.height(48.dp))
+                TitleSection(title = stringResource(id = R.string.welcome_back))
                 LogWorkoutsCard()
                 FeatureText()
             }
@@ -55,23 +55,15 @@ fun HomeScreen() {
 }
 
 @Composable
-fun Greeting() {
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.welcome_back),
-                style = Typography.h5,
-                fontSize = 16.sp
-            )
-        }
-    }
+fun TitleSection(
+    title: String
+) {
+    Text(
+        text = title,
+        style = Typography.h5,
+        fontSize = 24.sp,
+        modifier = Modifier.padding(start = 20.dp)
+    )
 }
 
 @Composable

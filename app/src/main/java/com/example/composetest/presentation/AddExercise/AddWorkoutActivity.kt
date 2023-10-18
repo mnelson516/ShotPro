@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Window
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -80,6 +81,9 @@ import com.example.composetest.presentation.util.InputValidator.VALID_INPUT
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class AddWorkoutActivity: ComponentActivity() {
@@ -352,7 +356,7 @@ class AddWorkoutActivity: ComponentActivity() {
                                 VALID_INPUT ->  {
                                     updateExercise(
                                         Exercise(
-                                            date = "",
+                                            date = LocalDateTime.now(),
                                             name = exerciseName,
                                             shotsMade = shotsMade.toInt(),
                                             totalShots = totalShots.toInt(),
@@ -552,9 +556,14 @@ class AddWorkoutActivity: ComponentActivity() {
     @Composable
     fun SaveButton() {
         val viewModel = viewModel<AddWorkoutViewModel>()
+        val activity = LocalContext.current as? Activity
+        val context = LocalContext.current
+
         ExtendedFloatingActionButton(
             onClick = {
                 viewModel.onEvent(AddExerciseEvent.SaveExercises)
+                Toast.makeText(context, "Successfully Saved Exercises", Toast.LENGTH_LONG).show()
+                activity?.onBackPressed()
             },
             icon = { Icon(Icons.Filled.Edit, stringResource(id = R.string.save_workout), tint = Color.White) },
             text = { Text(text = stringResource(id = R.string.save_workout), color = Color.White) },
