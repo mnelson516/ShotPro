@@ -8,6 +8,7 @@ fun Exercise.mapToEntity() : ExerciseEntity {
         0,
         this.date,
         this.name,
+        this.side,
         this.shotsMade,
         this.totalShots,
         this.range,
@@ -19,6 +20,7 @@ fun ExerciseEntity.mapToExercise() : Exercise {
     return Exercise(
         this.date,
         this.name,
+        this.side,
         this.shotsMade,
         this.totalShots,
         this.range,

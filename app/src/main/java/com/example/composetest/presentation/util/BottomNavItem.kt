@@ -8,7 +8,6 @@ sealed class BottomNavItem(var title: String, var icon: Int?, var screen_route: 
     object History: BottomNavItem("History", R.drawable.ic_history,"history")
     object Insights: BottomNavItem("Insights", R.drawable.ic_insights,"insights")
     object Settings: BottomNavItem("Settings", R.drawable.ic_settings, "settings")
-
     object Blank: BottomNavItem("", null, "")
 
 }

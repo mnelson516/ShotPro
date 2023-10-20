@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.composetest.R
 import com.example.composetest.presentation.TitleSection
 import com.example.composetest.presentation.model.Exercise
@@ -33,9 +34,7 @@ import java.time.LocalDateTime
 
 
 @Composable
-@Preview
-fun HistoryScreen() {
-    val viewModel = viewModel<HistoryViewModel>()
+fun HistoryScreen(navController: NavController, viewModel: HistoryViewModel) {
     val state = viewModel.state.collectAsState()
     Scaffold {
         Box(modifier = Modifier

@@ -26,18 +26,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.composetest.R
-import com.example.composetest.presentation.AddExercise.AddWorkoutActivity
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.Typography
 
 @Composable
-@Preview
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Scaffold {
         Box(modifier = Modifier
             .background(NavyBlue)
@@ -47,7 +45,7 @@ fun HomeScreen() {
             Column {
                 Spacer(modifier = Modifier.height(48.dp))
                 TitleSection(title = stringResource(id = R.string.welcome_back))
-                LogWorkoutsCard()
+                LogWorkoutsCard(navController)
                 FeatureText()
             }
         }
@@ -67,8 +65,7 @@ fun TitleSection(
 }
 
 @Composable
-fun LogWorkoutsCard() {
-    val context = LocalContext.current
+fun LogWorkoutsCard(navController: NavController) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -79,9 +76,7 @@ fun LogWorkoutsCard() {
             .padding(horizontal = 15.dp, vertical = 20.dp)
             .fillMaxWidth()
             .clickable {
-                context.startActivity(
-                    Intent(context, AddWorkoutActivity::class.java)
-                )
+                navController.navigate("add_workout")
             }
     ) {
         Column {

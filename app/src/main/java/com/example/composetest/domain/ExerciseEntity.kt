@@ -10,6 +10,7 @@ data class ExerciseEntity(
     val id: Int,
     val date: LocalDateTime,
     val name: String,
+    var side: String,
     val shotsMade: Int,
     val totalShots: Int,
     val range: String,
