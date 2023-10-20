@@ -10,21 +10,8 @@ import kotlinx.coroutines.flow.Flow
 interface ExerciseDao {
 
     @Query("SELECT * FROM exercises")
-    suspend fun getExercises(): Flow<List<ExerciseEntity>>
-
-    @Query("SELECT * FROM exercises WHERE date = :date")
-    suspend fun loadAllByDate(date: String): Flow<List<ExerciseEntity>>
-
-    @Query("SELECT * FROM exercises WHERE location = :location")
-    suspend fun loadAllByLocation(location: String): Flow<List<ExerciseEntity>>
-
-    @Query("SELECT * FROM exercises WHERE range = :range")
-    suspend fun loadAllByRange(range: String): Flow<List<ExerciseEntity>>
-
-    @Query("SELECT * FROM exercises WHERE name = :name")
-    suspend fun loadAllByName(name: String): Flow<List<ExerciseEntity>>
-
+    fun getExercises(): Flow<List<ExerciseEntity>>
     @Insert
-    suspend fun insertAll(exercises: Flow<List<ExerciseEntity>>)
+    suspend fun insertAll(exercises: List<ExerciseEntity>)
 
 }
