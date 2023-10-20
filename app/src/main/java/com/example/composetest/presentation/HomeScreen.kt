@@ -1,6 +1,5 @@
 package com.example.composetest.presentation
 
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,7 +44,6 @@ fun HomeScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(48.dp))
                 TitleSection(title = stringResource(id = R.string.welcome_back))
                 LogWorkoutsCard(navController)
-                FeatureText()
             }
         }
     }
@@ -105,45 +102,6 @@ fun LogWorkoutsCard(navController: NavController) {
                 contentDescription = "Go to add workout screen",
                 modifier = Modifier.size(16.dp)
             )
-        }
-    }
-}
-
-@Composable
-fun FeatureText() {
-    Text(
-        text = stringResource(id = R.string.feature_workouts),
-        style = Typography.h5,
-        fontSize = 20.sp,
-        modifier = Modifier
-            .padding(start = 20.dp)
-    )
-    Text(
-        text = stringResource(id = R.string.feature_workout_desc),
-        style = Typography.h5,
-        color = Color.White,
-        fontSize = 12.sp,
-        modifier = Modifier
-            .padding(start = 20.dp)
-    )
-}
-
-
-@Composable
-fun CardContent() {
-    Row(
-        modifier = Modifier
-            .padding(15.dp)
-            .fillMaxWidth()
-    ) {
-        Box(modifier = Modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(color = NeonOrange)
-        ) {
-
-        }
-        Box() {
-
         }
     }
 }

@@ -1,18 +1,26 @@
 package com.example.composetest.presentation.AddExercise
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.composetest.R
-import com.example.composetest.presentation.AddWorkout.LocationDropDown
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.util.InputValidator
 import java.time.LocalDateTime
@@ -38,7 +45,8 @@ fun AddExerciseScreen(
     navController: NavController
 ) {
     val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
-    val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
+    val spinnerLocationList = listOf("Center", "Baseline", "Diagonal", "Elbow")
+    val spinnerSideList = listOf("Right", "Left")
     var exerciseName by remember { mutableStateOf("") }
     var shotsMade by remember { mutableStateOf("") }
     var totalShots by remember { mutableStateOf("") }
@@ -46,6 +54,16 @@ fun AddExerciseScreen(
     var isFieldNotFilledError by remember { mutableStateOf(false) }
     var locationSpinnerString by remember { mutableStateOf(spinnerLocationList.first()) }
     var rangeSpinnerString by remember { mutableStateOf(spinnerRangeList.first()) }
+    var sideSpinnerString by remember { mutableStateOf(spinnerSideList.first()) }
+    var showSideSpinner by remember { mutableStateOf(false) }
+
+    showSideSpinner = when(locationSpinnerString) {
+        "Center" -> {
+            false
+        } else -> {
+            true
+        }
+    }
 
 
     Column(
@@ -67,8 +85,6 @@ fun AddExerciseScreen(
             fontSize = 20.sp,
             modifier = Modifier.padding(bottom = 12.dp)
         )
-
-
 
         OutlinedTextField(
             value = exerciseName,
@@ -124,6 +140,7 @@ fun AddExerciseScreen(
                 Text("Total Shots")
             }
         )
+
         if (isShotNumError) {
             Text(
                 text = "Cannot have more made shots than total shots",
@@ -148,6 +165,26 @@ fun AddExerciseScreen(
             modifier = Modifier
                 .padding(bottom = 12.dp)
         )
+
+
+        AnimatedVisibility(visible = showSideSpinner) {
+            Column {
+                Text(
+                    "Side",
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+
+                LocationDropDown(
+                    list = spinnerSideList,
+                    preselected = spinnerSideList.first(),
+                    onSelectionChanged = {
+                        sideSpinnerString = it
+                    },
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                )
+            }
+        }
 
         Text(
             "Distance",
@@ -182,7 +219,7 @@ fun AddExerciseScreen(
                             Exercise(
                                 date = LocalDateTime.now(),
                                 name = exerciseName,
-                                side = "right",
+                                side = if (showSideSpinner) sideSpinnerString else "Center",
                                 shotsMade = shotsMade.toInt(),
                                 totalShots = totalShots.toInt(),
                                 location = locationSpinnerString,
@@ -221,4 +258,64 @@ fun AddExerciseScreen(
         }
     }
 
+}
+
+@Composable
+fun LocationDropDown(
+    list: List<String>,
+    preselected: String,
+    onSelectionChanged: (myData: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    var selected by remember { mutableStateOf(preselected) }
+    var expanded by remember { mutableStateOf(false) } // initial value
+
+    OutlinedCard(
+        modifier = modifier.clickable {
+            expanded = !expanded
+        }
+    ) {
+
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            Text(
+                text = selected,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+            Icon(Icons.Outlined.ArrowDropDown, null, modifier = Modifier.padding(8.dp))
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.wrapContentWidth()
+            ) {
+                list.forEach { listEntry ->
+
+                    DropdownMenuItem(
+                        onClick = {
+                            selected = listEntry
+                            expanded = false
+                            onSelectionChanged(selected)
+                        },
+                        text = {
+                            Text(
+                                text = listEntry,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.Start)
+                            )
+                        },
+                    )
+                }
+            }
+
+        }
+    }
 }

@@ -4,6 +4,14 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -140,25 +148,50 @@ fun MainScreenView() {
 
 @Composable
 fun NavigationGraph(navController: NavHostController, viewModel: AddWorkoutViewModel, historyViewModel: HistoryViewModel) {
-    NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
-        composable(BottomNavItem.Home.screen_route) {
+    NavHost(
+        navController,
+        startDestination = BottomNavItem.Home.screen_route,
+        ) {
+        composable(
+            BottomNavItem.Home.screen_route,
+            enterTransition = {EnterTransition.None},
+            exitTransition = { ExitTransition.None}
+        ) {
             HomeScreen(navController)
         }
-        composable(BottomNavItem.History.screen_route) {
+        composable(
+            BottomNavItem.History.screen_route,
+            enterTransition = {EnterTransition.None},
+            exitTransition = { ExitTransition.None}
+        ) {
             HistoryScreen(navController, historyViewModel)
         }
-        composable(BottomNavItem.Insights.screen_route) {
+        composable(
+            BottomNavItem.Insights.screen_route,
+            enterTransition = {EnterTransition.None},
+            exitTransition = { ExitTransition.None}
+        ) {
             InsightsScreen(navController)
         }
-        composable(BottomNavItem.Settings.screen_route) {
+        composable(
+            BottomNavItem.Settings.screen_route,
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None}
+        ) {
             SettingsScreen(navController)
         }
-        composable("add_workout")
+        composable(
+            "add_workout",
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None })
          {
-             val exercise = it.savedStateHandle.get<Exercise>("exercise")
              WorkoutScreen(viewModel.state.value, viewModel::onEvent, navController)
         }
-        composable("add_exercise")
+        composable(
+            "add_exercise",
+            enterTransition = { slideInVertically() },
+            exitTransition = { slideOutVertically() }
+        )
         {
              AddExerciseScreen(
                 updateExercise = { exercise ->
@@ -209,7 +242,7 @@ fun BottomNavigationBar(navController: NavController) {
                         )
                     }
                 },
-                selected = currentRoute?.hierarchy?.any { it.route == it.route } == true,
+                selected = currentRoute?.hierarchy?.any { it.route == currentRoute.route } == true,
                 selectedContentColor = colorResource(R.color.purple_200),
                 unselectedContentColor = Color.White.copy(alpha = 0.4f),
                 onClick = {
