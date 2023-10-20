@@ -5,6 +5,7 @@ sealed class ExerciseOrder(val orderType: OrderType) {
     class Range(orderType: OrderType): ExerciseOrder(orderType)
     class Location(orderType: OrderType): ExerciseOrder(orderType)
     class Date(orderType: OrderType): ExerciseOrder(orderType)
+    class Angle(orderType: OrderType): ExerciseOrder(orderType)
 
     fun copy(orderType: OrderType): ExerciseOrder {
         return when(this) {
@@ -12,6 +13,7 @@ sealed class ExerciseOrder(val orderType: OrderType) {
             is Range -> Range(orderType)
             is Date -> Date(orderType)
             is Location -> Location(orderType)
+            is Angle -> Angle(orderType)
         }
     }
 }
