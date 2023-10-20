@@ -28,7 +28,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".presentation.AddExercise.AddWorkoutActivity"
+            android:name=".presentation.AddWorkout.AddWorkoutActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false">
         </activity>

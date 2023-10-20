@@ -1,7 +1,6 @@
 package com.example.composetest.presentation
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,7 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,10 +42,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composetest.R
-import com.example.composetest.presentation.AddExercise.AddWorkoutViewModel
-import com.example.composetest.presentation.AddExercise.WorkoutScreen
+import com.example.composetest.presentation.AddExercise.AddExerciseScreen
+import com.example.composetest.presentation.AddWorkout.AddExerciseEvent
+import com.example.composetest.presentation.AddWorkout.AddWorkoutViewModel
+import com.example.composetest.presentation.AddWorkout.WorkoutScreen
 import com.example.composetest.presentation.history.HistoryScreen
 import com.example.composetest.presentation.history.HistoryViewModel
+import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.ComposeTestTheme
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.SecondaryBlue
@@ -154,7 +155,17 @@ fun NavigationGraph(navController: NavHostController, viewModel: AddWorkoutViewM
         }
         composable("add_workout")
          {
-            WorkoutScreen(viewModel.state.value, viewModel::onEvent, navController)
+             val exercise = it.savedStateHandle.get<Exercise>("exercise")
+             WorkoutScreen(viewModel.state.value, viewModel::onEvent, navController)
+        }
+        composable("add_exercise")
+        {
+             AddExerciseScreen(
+                updateExercise = { exercise ->
+                    viewModel.onEvent(AddExerciseEvent.AddExercise(exercise))
+                },
+                navController = navController
+             )
         }
     }
 }

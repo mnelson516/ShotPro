@@ -1,9 +1,6 @@
-package com.example.composetest.presentation.AddExercise
+package com.example.composetest.presentation.AddWorkout
 
-import android.app.Activity
-import android.os.Build
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,30 +57,20 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.composetest.R
+import com.example.composetest.presentation.AddExercise.AddExerciseScreen
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
-import com.example.composetest.presentation.util.InputValidator
-import java.time.LocalDateTime
+
 
 @Composable
-fun WorkoutScreen(state: AddExercisesState, onEvent: (AddExerciseEvent) -> Unit, navController: NavController) {
+fun WorkoutScreen(state: AddExercisesState,
+                  onEvent: (AddExerciseEvent) -> Unit,
+                  navController: NavController)
+{
     val scaffoldState = rememberScaffoldState()
-
-
-    if (state.showPopup) {
-        ExerciseDialog(
-            updateExercise = { exercise ->
-                onEvent(AddExerciseEvent.AddExercise(exercise))
-            }, showPopup = {
-                onEvent( AddExerciseEvent.ShowPopup(false))
-
-            }, onEvent = onEvent
-        )
-    }
-
     Scaffold(
         floatingActionButton = {
             Row(
@@ -94,7 +81,7 @@ fun WorkoutScreen(state: AddExercisesState, onEvent: (AddExerciseEvent) -> Unit,
                     shape = CircleShape,
                     backgroundColor = NeonOrange,
                     onClick = {
-                        onEvent(AddExerciseEvent.ShowPopup(true))
+                        navController.navigate("add_exercise")
                     },
                     contentColor = Color.White,
                     modifier = Modifier
@@ -152,207 +139,6 @@ fun TopBar(navController: NavController) {
             modifier = Modifier
                 .padding(start = 8.dp)
         )
-    }
-}
-
-@Composable
-fun ExerciseDialog(
-    updateExercise: (Exercise) -> Unit,
-    showPopup: (Boolean) -> Unit,
-    onEvent: (AddExerciseEvent) -> Unit
-) {
-    val spinnerRangeList = listOf("Close Range", "Mid Range", "Three Pointer")
-    val spinnerLocationList = listOf("Center", "Baseline", "Diagonal")
-    var exerciseName by remember { mutableStateOf("") }
-    var shotsMade by remember { mutableStateOf("") }
-    var totalShots by remember { mutableStateOf("") }
-    var isShotNumError by remember { mutableStateOf(false) }
-    var isFieldNotFilledError by remember { mutableStateOf(false) }
-    var locationSpinnerString by remember { mutableStateOf(spinnerLocationList.first()) }
-    var rangeSpinnerString by remember { mutableStateOf(spinnerRangeList.first()) }
-
-
-    Dialog(
-        onDismissRequest = {
-            onEvent(AddExerciseEvent.ShowPopup(false))
-        }) {
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentHeight(Alignment.CenterVertically)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_close),
-                    contentDescription = "Close Popup",
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable {
-                            onEvent(AddExerciseEvent.ShowPopup(false))
-                        }
-                )
-
-                Text(
-                    text = stringResource(id = R.string.add_exercise),
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(bottom = 12.dp)
-                )
-
-
-
-                OutlinedTextField(
-                    value = exerciseName,
-                    maxLines = 1,
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth(),
-                    onValueChange = {
-                        exerciseName = it
-                    },
-                    label = {
-                        Text("Exercise Name")
-                    }
-                )
-
-                OutlinedTextField(
-                    value = shotsMade,
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth(),
-                    onValueChange = {
-                        shotsMade = it
-                    },
-                    label = {
-                        Text("Shots Made")
-                    }
-                )
-
-                OutlinedTextField(
-                    value = totalShots,
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier
-                        .padding(bottom = 12.dp)
-                        .fillMaxWidth(),
-                    onValueChange = {
-                        totalShots = it
-                        if (totalShots.isNotEmpty()) {
-                            isShotNumError = shotsMade.toInt() > totalShots.toInt()
-                        }
-                    },
-                    trailingIcon = {
-                        if (isShotNumError)
-                            Icon(
-                                painterResource(id = R.drawable.ic_error),
-                                contentDescription = "Error Icon",
-                                tint = MaterialTheme.colors.error)
-                    },
-                    isError = isShotNumError,
-                    label = {
-                        Text("Total Shots")
-                    }
-                )
-                if (isShotNumError) {
-                    Text(
-                        text = "Cannot have more made shots than total shots",
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .padding(bottom = 12.dp),
-                    )
-                }
-
-                Text(
-                    "Angle",
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                LocationDropDown(
-                    list = spinnerLocationList,
-                    preselected = spinnerLocationList.first(),
-                    onSelectionChanged = {
-                        locationSpinnerString = it
-                    },
-                    modifier = Modifier
-                        .padding(bottom = 12.dp))
-
-                Text(
-                    "Distance",
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                LocationDropDown(
-                    list = spinnerRangeList,
-                    preselected = spinnerRangeList.first(),
-                    onSelectionChanged = {
-                        rangeSpinnerString = it
-                    },
-                    modifier = Modifier
-                        .padding(bottom = 16.dp))
-
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(1f)
-                        .height(48.dp),
-                    onClick = {
-                        when(
-                            InputValidator.isValidExerciseInput(
-                                exerciseName,
-                                shotsMade,
-                                totalShots
-                            )) {
-                            InputValidator.EMPTY_FIELD -> isFieldNotFilledError = true
-                            InputValidator.INVALID_INPUT -> isShotNumError = true
-                            InputValidator.VALID_INPUT ->  {
-                                updateExercise(
-                                    Exercise(
-                                        date = LocalDateTime.now(),
-                                        name = exerciseName,
-                                        side = "right",
-                                        shotsMade = shotsMade.toInt(),
-                                        totalShots = totalShots.toInt(),
-                                        location = locationSpinnerString,
-                                        range = rangeSpinnerString
-                                    )
-                                )
-                                showPopup(false)
-                            }
-                        }
-                    },
-                    content =  {
-                        Text(
-                            "Add Exercise"
-                        )
-                    }
-                )
-
-                if (isFieldNotFilledError) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 12.dp, top = 12.dp)
-                    ) {
-                        Icon (
-                            painterResource(id = R.drawable.ic_error),
-                            contentDescription = "Error Icon",
-                            tint = MaterialTheme.colors.error
-                        )
-                        Text(
-                            text = "Must Fill Out all Fields",
-                            color = MaterialTheme.colors.error,
-                            style = MaterialTheme.typography.caption,
-                        )
-                    }
-                }
-            }
-        }
     }
 }
 

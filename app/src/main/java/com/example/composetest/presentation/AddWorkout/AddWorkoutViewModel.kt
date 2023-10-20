@@ -1,4 +1,4 @@
-package com.example.composetest.presentation.AddExercise
+package com.example.composetest.presentation.AddWorkout
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -34,11 +34,6 @@ class AddWorkoutViewModel @Inject constructor(
                 newList.remove(event.exercise)
                 _state.value = state.value.copy(
                     exercises = newList.toList()
-                )
-            }
-            is AddExerciseEvent.ShowPopup -> {
-                _state.value = state.value.copy(
-                    showPopup = event.showPopup
                 )
             }
             is AddExerciseEvent.ShowSaveButton -> {
