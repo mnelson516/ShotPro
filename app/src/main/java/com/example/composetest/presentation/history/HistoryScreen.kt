@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,13 +29,14 @@ import com.example.composetest.R
 import com.example.composetest.presentation.TitleSection
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
+import java.time.LocalDateTime
 
 
 @Composable
 @Preview
 fun HistoryScreen() {
     val viewModel = viewModel<HistoryViewModel>()
-    val state = viewModel.state.value
+    val state = viewModel.state.collectAsState()
     Scaffold {
         Box(modifier = Modifier
             .background(NavyBlue)
@@ -42,16 +45,22 @@ fun HistoryScreen() {
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(top = 24.dp))
-                HistoryTopBar()
-                FilterSection(state.exercises)
+                HistoryTopBar(
+                    onEvent = viewModel::onEvent
+                )
+                FilterSection(
+                    state,
+                    onEvent = viewModel::onEvent
+                )
             }
         }
     }
 }
 
 @Composable
-fun HistoryTopBar() {
-    val viewModel = viewModel<HistoryViewModel>()
+fun HistoryTopBar(
+    onEvent: (HistoryEvent) -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -73,7 +82,7 @@ fun HistoryTopBar() {
                 .weight(0.5f)
         ) {
             IconButton(onClick = {
-                viewModel.onEvent(HistoryEvent.ShowFilters)
+                onEvent(HistoryEvent.ShowFilters)
             }) {
                 Icon(
                     imageVector = Icons.Default.DateRange,
@@ -95,9 +104,7 @@ fun HistoryTopBar() {
 }
 
 @Composable
-fun FilterSection(
-    items: List<Exercise>
-) {
+fun FilterSection(state: State<HistoryState>, onEvent: (HistoryEvent) -> Unit) {
 
 }
 
