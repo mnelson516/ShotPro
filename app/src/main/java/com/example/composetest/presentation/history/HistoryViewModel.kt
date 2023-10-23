@@ -63,6 +63,9 @@ class HistoryViewModel @Inject constructor(
                     is ExerciseOrder.Range -> {
                         it.filter { exercise -> exercise.range == param }
                     }
+                    is ExerciseOrder.Angle -> {
+                        it.filter { exercise -> exercise.side == param }
+                    }
                 }
             }
             .onEach { exercises ->

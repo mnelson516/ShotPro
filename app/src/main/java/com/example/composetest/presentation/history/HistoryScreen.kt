@@ -27,6 +27,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -122,51 +125,8 @@ fun FilterSection(
         enter = fadeIn() + slideInVertically(),
         exit = fadeOut() + slideOutVertically()
     ) {
-//        Row(
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            DefaultRadioButton(
-//                text = "Location",
-//                selected = exerciseOrder is ExerciseOrder.Location,
-//                onSelect = {  }
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            DefaultRadioButton(
-//                text = "Range",
-//                selected = exerciseOrder is ExerciseOrder.Range,
-//                onSelect = {  }
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            DefaultRadioButton(
-//                text = "Angle",
-//                selected = exerciseOrder is ExerciseOrder.Angle,
-//                onSelect = {  }
-//            )
-//        }
+
     }
 }
 
-@Composable
-fun DefaultRadioButton(
-    text: String,
-    selected: Boolean,
-    onSelect: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        RadioButton(
-            selected = selected,
-            onClick = onSelect,
-            colors = RadioButtonDefaults.colors(
-                selectedColor = Color.Cyan,
-                unselectedColor = Color.Transparent
-            )
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, color = Color.White)
-    }
-}
 
