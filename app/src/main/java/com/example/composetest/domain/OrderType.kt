@@ -5,4 +5,5 @@ sealed class OrderType {
     object Range: OrderType()
     object Location: OrderType()
     object Date: OrderType()
+    object Side: OrderType()
 }

@@ -90,8 +90,8 @@ fun MainScreenView() {
     val viewModel = viewModel<AddWorkoutViewModel>()
     val historyViewModel = viewModel<HistoryViewModel>()
     val showBottomBar = rememberSaveable { (mutableStateOf(true)) }
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     when (navBackStackEntry?.destination?.route) {
         "add_workout" -> {
             showBottomBar.value = false
@@ -164,7 +164,7 @@ fun NavigationGraph(navController: NavHostController, viewModel: AddWorkoutViewM
             enterTransition = {EnterTransition.None},
             exitTransition = { ExitTransition.None}
         ) {
-            HistoryScreen(navController, historyViewModel)
+            HistoryScreen(historyViewModel)
         }
         composable(
             BottomNavItem.Insights.screen_route,
@@ -235,12 +235,10 @@ fun BottomNavigationBar(navController: NavController) {
                     }
                 },
                 label = {
-                    it.title.let {
-                        Text(
-                            text = it,
-                            color = Color.White
-                        )
-                    }
+                    Text(
+                        text = it.title,
+                        color = Color.White
+                    )
                 },
                 selected = currentRoute?.hierarchy?.any { it.route == currentRoute.route } == true,
                 selectedContentColor = colorResource(R.color.purple_200),

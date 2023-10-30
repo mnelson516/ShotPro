@@ -35,36 +35,59 @@ class HistoryViewModel @Inject constructor(
                     showFilters = !state.value.showFilters
                 )
             }
+            is HistoryEvent.SelectCategory -> {
+                if (state.value.currentCategory::class == event.category::class &&
+                    state.value.currentCategory == event.category) {
+                    return
+                }
+                _state.value = state.value.copy(
+                    currentCategory = event.category
+                )
+            }
             is HistoryEvent.GetExercises -> {
                     if (state.value.currentFilter::class == event.order::class &&
                         state.value.currentFilter.orderType == event.order.orderType) {
                         return
                     }
-                    getExercises(event.order, param = event.param)
+                    getExercises(event.order)
                 }
             }
         }
 
-    private fun getExercises(exerciseOrder: ExerciseOrder, param: String) {
-
+    private fun getExercises(exerciseOrder: ExerciseOrder) {
         getExercisesJob?.cancel()
         getExercisesJob = exerciseRepository.fetchExercises()
             .map {
                 when (exerciseOrder) {
-                    is ExerciseOrder.Date -> {
-                        it.filter { exercise -> exercise.date.toString() == param }
-                    }
                     is ExerciseOrder.Default -> {
                         it
                     }
-                    is ExerciseOrder.Location -> {
-                        it.filter { exercise -> exercise.location == param }
+                    is ExerciseOrder.Baseline -> {
+                        it.filter { exercise -> exercise.location == "Baseline" }
                     }
-                    is ExerciseOrder.Range -> {
-                        it.filter { exercise -> exercise.range == param }
+                    is ExerciseOrder.Center -> {
+                        it.filter { exercise -> exercise.location == "Center" }
                     }
-                    is ExerciseOrder.Angle -> {
-                        it.filter { exercise -> exercise.side == param }
+                    is ExerciseOrder.Diagonal -> {
+                        it.filter { exercise -> exercise.location == "Diagonal" }
+                    }
+                    is ExerciseOrder.Elbow -> {
+                        it.filter { exercise -> exercise.location == "Elbow" }
+                    }
+                    is ExerciseOrder.Left -> {
+                        it.filter { exercise -> exercise.side == "Left" }
+                    }
+                    is ExerciseOrder.Right -> {
+                        it.filter { exercise -> exercise.side == "Right" }
+                    }
+                    is ExerciseOrder.CloseRange -> {
+                        it.filter { exercise -> exercise.range == "Baseline" }
+                    }
+                    is ExerciseOrder.MidRange -> {
+                        it.filter { exercise -> exercise.range == "Mid Range" }
+                    }
+                    is ExerciseOrder.ThreePointRange -> {
+                        it.filter { exercise -> exercise.range == "Three Pointer" }
                     }
                 }
             }
