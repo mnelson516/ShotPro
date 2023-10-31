@@ -1,4 +1,4 @@
-package com.example.composetest.presentation.AddWorkout
+package com.example.composetest.presentation.addworkout
 
 import com.example.composetest.presentation.model.Exercise
 

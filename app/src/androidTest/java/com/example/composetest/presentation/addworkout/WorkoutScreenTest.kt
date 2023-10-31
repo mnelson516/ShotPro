@@ -1,4 +1,4 @@
-package com.example.composetest.presentation.AddWorkout
+package com.example.composetest.presentation.addworkout
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.navigation.compose.NavHost

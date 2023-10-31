@@ -4,13 +4,9 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -50,13 +46,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composetest.R
-import com.example.composetest.presentation.AddExercise.AddExerciseScreen
-import com.example.composetest.presentation.AddWorkout.AddExerciseEvent
-import com.example.composetest.presentation.AddWorkout.AddWorkoutViewModel
-import com.example.composetest.presentation.AddWorkout.WorkoutScreen
+import com.example.composetest.presentation.addexercise.AddExerciseScreen
+import com.example.composetest.presentation.addworkout.AddExerciseEvent
+import com.example.composetest.presentation.addworkout.AddWorkoutViewModel
+import com.example.composetest.presentation.addworkout.WorkoutScreen
+import com.example.composetest.presentation.insights.InsightsScreen
 import com.example.composetest.presentation.history.HistoryScreen
 import com.example.composetest.presentation.history.HistoryViewModel
-import com.example.composetest.presentation.model.Exercise
+import com.example.composetest.presentation.insights.InsightsViewModel
 import com.example.composetest.presentation.theme.ComposeTestTheme
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.SecondaryBlue
@@ -65,15 +62,16 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
         setContent {
             val systemUiController: SystemUiController = rememberSystemUiController()
             systemUiController.setStatusBarColor(color = colorResource(id = R.color.navy_blue))
+
+
             Surface(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -89,6 +87,7 @@ fun MainScreenView() {
     val navController = rememberNavController()
     val viewModel = viewModel<AddWorkoutViewModel>()
     val historyViewModel = viewModel<HistoryViewModel>()
+    val insightsViewModel = viewModel<InsightsViewModel>()
     val showBottomBar = rememberSaveable { (mutableStateOf(true)) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
@@ -142,12 +141,17 @@ fun MainScreenView() {
             }
         }
     ) {
-        NavigationGraph(navController = navController, viewModel, historyViewModel)
+        NavigationGraph(navController = navController, viewModel, historyViewModel, insightsViewModel)
     }
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, viewModel: AddWorkoutViewModel, historyViewModel: HistoryViewModel) {
+fun NavigationGraph(
+    navController: NavHostController,
+    viewModel: AddWorkoutViewModel,
+    historyViewModel: HistoryViewModel,
+    insightsViewModel: InsightsViewModel
+) {
     NavHost(
         navController,
         startDestination = BottomNavItem.Home.screen_route,
@@ -171,7 +175,7 @@ fun NavigationGraph(navController: NavHostController, viewModel: AddWorkoutViewM
             enterTransition = {EnterTransition.None},
             exitTransition = { ExitTransition.None}
         ) {
-            InsightsScreen(navController)
+            InsightsScreen(navController, insightsViewModel)
         }
         composable(
             BottomNavItem.Settings.screen_route,

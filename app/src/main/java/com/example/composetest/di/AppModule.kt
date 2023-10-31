@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.composetest.data.ExerciseDao
 import com.example.composetest.data.ExerciseDatabase
+import com.example.composetest.data.FieldGoalDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +28,11 @@ object AppModule {
     @Provides
     fun provideExerciseDao(appDatabase: ExerciseDatabase): ExerciseDao {
         return appDatabase.exerciseDao
+    }
+
+    @Provides
+    fun provideFieldGoalDao(appDatabase: ExerciseDatabase): FieldGoalDao {
+        return appDatabase.fieldGoalDao
     }
 
 }
