@@ -6,13 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.composetest.data.mapToEntity
 import com.example.composetest.domain.ExerciseEntity
 import com.example.composetest.domain.ExerciseRepository
-import com.example.composetest.domain.FieldGoalData
+import com.example.composetest.domain.FieldGoalDataEntity
 import com.example.composetest.presentation.model.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,7 +46,7 @@ class AddWorkoutViewModel @Inject constructor(
             is AddExerciseEvent.SaveExercises -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     exerciseRepository.insertExercise(convertToEntities(state.value.exercises))
-                    val currFieldGoalData: FieldGoalData? = exerciseRepository.fetchFieldGoalData()
+                    val currFieldGoalData: FieldGoalDataEntity? = exerciseRepository.fetchFieldGoalData()
                     if (currFieldGoalData != null) {
                         exerciseRepository.insertFieldGoalData(
                             addFieldGoalData(
@@ -64,8 +62,8 @@ class AddWorkoutViewModel @Inject constructor(
         }
     }
 
-    private fun getNumberOfFieldGoals(list: List<Exercise>): FieldGoalData {
-        val returnData = FieldGoalData(
+    private fun getNumberOfFieldGoals(list: List<Exercise>): FieldGoalDataEntity {
+        val returnData = FieldGoalDataEntity(
             totalFieldGoals = 0,
             totalFieldGoalsMade = 0,
             closeRangeFieldGoals = 0,
@@ -138,8 +136,8 @@ class AddWorkoutViewModel @Inject constructor(
         return returnData
     }
 
-    private fun addFieldGoalData(newData: FieldGoalData, oldData: FieldGoalData): FieldGoalData {
-        return FieldGoalData(
+    private fun addFieldGoalData(newData: FieldGoalDataEntity, oldData: FieldGoalDataEntity): FieldGoalDataEntity {
+        return FieldGoalDataEntity(
             totalFieldGoals = newData.totalFieldGoals + oldData.totalFieldGoals,
             totalFieldGoalsMade = newData.totalFieldGoalsMade + oldData.totalFieldGoalsMade,
             closeRangeFieldGoals = newData.closeRangeFieldGoals + oldData.closeRangeFieldGoals,

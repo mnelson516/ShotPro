@@ -8,11 +8,11 @@ import androidx.navigation.NavController
 
 
 @Composable
-fun InsightsScreen(navController: NavController, viewModel: InsightsViewModel) {
+fun InsightsScreen(viewModel: InsightsViewModel) {
     viewModel.getFieldGoals()
     val state = viewModel.state.collectAsState()
     Column {
-        Text(text = state.value.data.totalFieldGoalsMade.toString())
-        Text(text = state.value.data.totalFieldGoals.toString())
+        Text(text = state.value.data?.totalFieldGoalsMade.toString())
+        Text(text = state.value.data?.totalFieldGoals.toString())
     }
 }

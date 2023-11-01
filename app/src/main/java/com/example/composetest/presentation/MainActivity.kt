@@ -175,7 +175,7 @@ fun NavigationGraph(
             enterTransition = {EnterTransition.None},
             exitTransition = { ExitTransition.None}
         ) {
-            InsightsScreen(navController, insightsViewModel)
+            InsightsScreen(insightsViewModel)
         }
         composable(
             BottomNavItem.Settings.screen_route,

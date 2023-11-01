@@ -4,13 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.composetest.domain.ExerciseEntity
-import com.example.composetest.domain.FieldGoalData
+import com.example.composetest.domain.FieldGoalDataEntity
 import com.example.composetest.presentation.util.Converters
 
 @Database(
     entities = [
         ExerciseEntity::class,
-        FieldGoalData::class
+        FieldGoalDataEntity::class
     ],
     version = 1
 )

@@ -3,15 +3,14 @@ package com.example.composetest.data
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.composetest.domain.FieldGoalData
-import kotlinx.coroutines.flow.Flow
+import com.example.composetest.domain.FieldGoalDataEntity
 
 
 @Dao
 interface FieldGoalDao {
     @Query("SELECT * FROM `field-goals`")
-    fun getFieldGoalData(): FieldGoalData?
+    fun getFieldGoalData(): FieldGoalDataEntity?
 
     @Upsert()
-    suspend fun upsertFieldGoalData(data: FieldGoalData)
+    suspend fun upsertFieldGoalData(data: FieldGoalDataEntity)
 }

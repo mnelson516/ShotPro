@@ -2,7 +2,7 @@ package com.example.composetest.data
 
 import com.example.composetest.domain.ExerciseEntity
 import com.example.composetest.domain.ExerciseRepository
-import com.example.composetest.domain.FieldGoalData
+import com.example.composetest.domain.FieldGoalDataEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,12 +15,12 @@ class ExerciseRepositoryImpl @Inject constructor (
 ) : ExerciseRepository {
 
     override fun fetchExercises(): Flow<List<ExerciseEntity>> = exerciseDao.getExercises()
-    override suspend fun fetchFieldGoalData(): FieldGoalData? = fieldGoalDao.getFieldGoalData()
+    override suspend fun fetchFieldGoalData(): FieldGoalDataEntity? = fieldGoalDao.getFieldGoalData()
 
     override suspend fun insertExercise(exercises: List<ExerciseEntity>) {
         exerciseDao.insertAll(exercises)
     }
-    override suspend fun insertFieldGoalData(data: FieldGoalData) {
+    override suspend fun insertFieldGoalData(data: FieldGoalDataEntity) {
         fieldGoalDao.upsertFieldGoalData(data)
     }
 }
