@@ -18,6 +18,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,12 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.composetest.R
+import com.example.composetest.presentation.insights.InsightsViewModel
+import com.example.composetest.presentation.insights.SemicircleView
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.Typography
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, insightsViewModel: InsightsViewModel) {
+    val state = insightsViewModel.state.collectAsState()
+    insightsViewModel.getFieldGoals()
     Scaffold {
         Box(modifier = Modifier
             .background(NavyBlue)
@@ -43,6 +48,21 @@ fun HomeScreen(navController: NavController) {
             Column {
                 Spacer(modifier = Modifier.height(48.dp))
                 TitleSection(title = stringResource(id = R.string.welcome_back))
+                state.value.data?.let { data ->
+                    Box(
+                        modifier = Modifier.padding(horizontal = 14.dp)
+                    ) {
+                        SemicircleView(text = stringResource(id = R.string.total_field_goals),
+                            totalShots = data.totalFieldGoals, shotsMade = data.totalFieldGoalsMade, isThreePointer = false)
+                    }
+                } ?: run {
+                    Box(
+                        modifier = Modifier.padding(horizontal = 14.dp)
+                    ) {
+                        SemicircleView(text = stringResource(id = R.string.no_data_yet),
+                            totalShots = 1, shotsMade = 0, isThreePointer = false)
+                    }
+                }
                 LogWorkoutsCard(navController)
             }
         }

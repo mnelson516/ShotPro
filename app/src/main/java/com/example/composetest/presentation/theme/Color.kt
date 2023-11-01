@@ -8,6 +8,7 @@ val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 val NeonOrange = Color(0xFFFF9800)
 val WhiteGray = Color(0xFFB7B7B7)
+val RedColor = Color(0xFFF4364C)
 
 val NavyBlue = Color(0xFF062E4C)
 val SecondaryBlue = Color(0xFF5C6BC0)

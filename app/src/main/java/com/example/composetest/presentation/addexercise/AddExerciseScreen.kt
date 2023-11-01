@@ -102,7 +102,7 @@ fun AddExerciseScreen(
         OutlinedTextField(
             value = shotsMade,
             maxLines = 1,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .fillMaxWidth(),
@@ -117,7 +117,7 @@ fun AddExerciseScreen(
         OutlinedTextField(
             value = totalShots,
             maxLines = 1,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .fillMaxWidth(),

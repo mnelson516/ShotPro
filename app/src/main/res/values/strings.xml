@@ -10,4 +10,18 @@
     <string name="no_exercises_added">No Exercises Added Yet</string>
     <string name="save_workout">Save Workout</string>
     <string name="history">History</string>
+    <string name="insights">Insights</string>
+    <string name="no_content_yet">No content yet, log a workout to get started!</string>
+    <string name="total_field_goals">Total Shots</string>
+    <string name="right_side_field_goals">Right Side Shots</string>
+    <string name="left_side_field_goals">Left Side Shots</string>
+    <string name="baseline_field_goals">Baseline Shots</string>
+    <string name="elbow_field_goals">Elbow Shots</string>
+    <string name="diagonal_field_goals">Diagonal Shots</string>
+    <string name="center_field_goals">Center Shots</string>
+    <string name="close_range_field_goals">Close Range</string>
+    <string name="mid_range_field_goals">Mid Range</string>
+    <string name="three_point_field_goals">Three Pointers</string>
+    <string name="no_data_yet">No data yet</string>
+
 </resources>
