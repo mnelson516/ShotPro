@@ -15,7 +15,7 @@ class ExerciseRepositoryImpl @Inject constructor (
 ) : ExerciseRepository {
 
     override fun fetchExercises(): Flow<List<ExerciseEntity>> = exerciseDao.getExercises()
-    override fun fetchFieldGoalData(): Flow<FieldGoalData> = fieldGoalDao.getFieldGoalData()
+    override suspend fun fetchFieldGoalData(): FieldGoalData? = fieldGoalDao.getFieldGoalData()
 
     override suspend fun insertExercise(exercises: List<ExerciseEntity>) {
         exerciseDao.insertAll(exercises)

@@ -9,6 +9,8 @@ import com.example.composetest.domain.ExerciseRepository
 import com.example.composetest.domain.FieldGoalData
 import com.example.composetest.presentation.model.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -44,8 +46,19 @@ class AddWorkoutViewModel @Inject constructor(
                 )
             }
             is AddExerciseEvent.SaveExercises -> {
-                viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     exerciseRepository.insertExercise(convertToEntities(state.value.exercises))
+                    val currFieldGoalData: FieldGoalData? = exerciseRepository.fetchFieldGoalData()
+                    if (currFieldGoalData != null) {
+                        exerciseRepository.insertFieldGoalData(
+                            addFieldGoalData(
+                                getNumberOfFieldGoals(state.value.exercises),
+                                currFieldGoalData
+                            )
+                        )
+                    } else {
+                        exerciseRepository.insertFieldGoalData(getNumberOfFieldGoals(state.value.exercises))
+                    }
                 }
             }
         }

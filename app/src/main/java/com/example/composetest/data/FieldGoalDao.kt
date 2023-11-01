@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FieldGoalDao {
     @Query("SELECT * FROM `field-goals`")
-    fun getFieldGoalData(): Flow<FieldGoalData>
+    fun getFieldGoalData(): FieldGoalData?
 
-    @Upsert
+    @Upsert()
     suspend fun upsertFieldGoalData(data: FieldGoalData)
 }

@@ -25,7 +25,7 @@ class InsightsViewModel @Inject constructor(
     fun getFieldGoals() {
         viewModelScope.launch {
             state.value.copy(
-                data = exerciseRepository.fetchFieldGoalData().first()
+               // data = exerciseRepository.fetchFieldGoalData()!!
             )
         }
 
