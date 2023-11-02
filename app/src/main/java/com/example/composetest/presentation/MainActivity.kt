@@ -53,6 +53,7 @@ import com.example.composetest.presentation.addworkout.WorkoutScreen
 import com.example.composetest.presentation.insights.InsightsScreen
 import com.example.composetest.presentation.history.HistoryScreen
 import com.example.composetest.presentation.history.HistoryViewModel
+import com.example.composetest.presentation.home.HomeScreen
 import com.example.composetest.presentation.insights.InsightsViewModel
 import com.example.composetest.presentation.theme.ComposeTestTheme
 import com.example.composetest.presentation.theme.NeonOrange

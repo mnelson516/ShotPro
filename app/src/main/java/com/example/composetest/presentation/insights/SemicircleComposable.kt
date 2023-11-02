@@ -36,7 +36,8 @@ import com.example.composetest.presentation.util.PercentageConverter
 @Composable
 @Preview
 fun SemiCirclePreview() {
-    SemicircleView(text = "Field Goals", totalShots = 20, shotsMade = 10, false)
+    FieldGoalGauge(percentage = 50f)
+    //SemicircleView(text = "Field Goals", totalShots = 20, shotsMade = 10, false)
 }
 
 @Composable
@@ -133,6 +134,65 @@ fun getBrushColor(percentage: Float, isThreePointer: Boolean): Brush {
             SolidColor(Color.Yellow)
         } else {
             SolidColor(Color.Green)
+        }
+    }
+}
+
+@Composable
+fun FieldGoalGauge(percentage: Float) {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(
+            modifier = Modifier
+                .size(250.dp)
+                .clipToBounds()
+                .padding(14.dp)
+        ) {
+            drawArc(
+                brush = SolidColor(Color.LightGray),
+                size = Size(size.width, size.height),
+                startAngle = 150f,
+                sweepAngle = 240f,
+                useCenter = false,
+                style = Stroke(40f, cap = StrokeCap.Round)
+            )
+            drawArc(
+                brush = getBrushColor(percentage, false),
+                size = Size(size.width, size.height),
+                startAngle = 150f,
+                sweepAngle = 240 * (percentage / 100),
+                useCenter = false,
+                style = Stroke(40f, cap = StrokeCap.Round)
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.offset(y = (-12).dp)
+        ) {
+            Text(
+                text = "Field Goals",
+                color = Color.White,
+                fontSize = 14.sp,
+            )
+            Row(
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .offset(x = 6.dp)
+            ) {
+                Text(
+                    text = percentage.toInt().toString(),
+                    style = Typography.h4,
+                    color = Color.White,
+                    fontSize = 40.sp,
+                )
+                Text(
+                    text = "%",
+                    style = Typography.h4,
+                    color = Color.White,
+                    fontSize = 14.sp,
+                )
+            }
         }
     }
 }

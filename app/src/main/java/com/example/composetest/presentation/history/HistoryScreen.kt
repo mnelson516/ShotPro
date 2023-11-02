@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.composetest.R
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.OrderType
-import com.example.composetest.presentation.TitleSection
+import com.example.composetest.presentation.home.TitleSection
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.SecondaryBlue

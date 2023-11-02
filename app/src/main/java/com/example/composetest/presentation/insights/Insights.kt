@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.composetest.R
-import com.example.composetest.presentation.TitleSection
+import com.example.composetest.presentation.home.TitleSection
 import com.example.composetest.presentation.theme.NavyBlue
 
 
