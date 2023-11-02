@@ -6,7 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -180,7 +184,7 @@ fun NavigationGraph(
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None}
         ) {
-            SettingsScreen(navController)
+            SettingsScreen()
         }
         composable(
             "Add Workout",
@@ -191,8 +195,8 @@ fun NavigationGraph(
         }
         composable(
             "Add Exercise",
-            enterTransition = { slideInVertically() },
-            exitTransition = { slideOutVertically() }
+            enterTransition = { slideInVertically() + fadeIn() },
+            exitTransition = { slideOutVertically() + fadeOut() }
         )
         {
              AddExerciseScreen(

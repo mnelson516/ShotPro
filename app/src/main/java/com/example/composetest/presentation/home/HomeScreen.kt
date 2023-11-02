@@ -62,7 +62,11 @@ fun HomeScreen(navController: NavController, insightsViewModel: InsightsViewMode
                 )
                 CardSection()
             } ?: run {
-
+                GaugeSection(
+                    percentage = PercentageConverter.convertToPercentage(0, 1).toFloat(),
+                    text = stringResource(id = R.string.no_data_available)
+                )
+                CardSection()
             }
         }
     }

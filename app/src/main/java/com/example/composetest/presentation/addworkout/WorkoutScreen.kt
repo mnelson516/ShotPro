@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,12 +21,16 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,8 +50,10 @@ import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
+import com.example.composetest.presentation.theme.WhiteBackground
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkoutScreen(state: AddExercisesState,
                   onEvent: (AddExerciseEvent) -> Unit,
@@ -54,6 +61,36 @@ fun WorkoutScreen(state: AddExercisesState,
 {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    androidx.compose.material3.Text(
+                        text = stringResource(id = R.string.new_workout),
+                        style = Typography.h1
+                    )
+                },
+                colors = TopAppBarColors(
+                    containerColor = NavyBlue,
+                    scrolledContainerColor = NavyBlue,
+                    actionIconContentColor = NavyBlue,
+                    navigationIconContentColor = NavyBlue,
+                    titleContentColor = NavyBlue
+                ),
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back_arrow),
+                        contentDescription = "Back Arrow",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable {
+                                navController.navigateUp()
+                        }
+                    )
+                }
+
+            )
+        },
         floatingActionButton = {
             Row(
                 horizontalArrangement = Arrangement.End
@@ -78,53 +115,32 @@ fun WorkoutScreen(state: AddExercisesState,
     ) {
         Column(
             modifier = Modifier
-                .background(NavyBlue)
+                .background(WhiteBackground)
                 .padding(it)
                 .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            TopBar(navController)
             if (state.exercises.isEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.no_exercises_added),
-                    style = Typography.h6,
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 24.dp))
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.no_exercises_added),
+                        style = Typography.h3,
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 24.dp)
+                        )
+                    }
+
             } else {
                 ExerciseList(exercises = state.exercises, onEvent)
             }
         }
     }
 }
-
-@Composable
-fun TopBar(navController: NavController) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(20.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back_arrow),
-            contentDescription = "Back Arrow",
-            tint = Color.White,
-            modifier = Modifier
-                .clickable {
-                    navController.navigateUp()
-                }
-        )
-        Text(
-            text = stringResource(id = R.string.add_workout),
-            style = Typography.h5,
-            color = Color.White,
-            modifier = Modifier
-                .padding(start = 8.dp)
-        )
-    }
-}
-
-
 
 @Composable
 fun ExerciseList(exercises: List<Exercise>, onEvent: (AddExerciseEvent) -> Unit) {
@@ -168,7 +184,8 @@ fun ExerciseCard(exercise: Exercise, onEvent: (AddExerciseEvent) -> Unit) {
                     .padding(end = 8.dp)
                     .clickable {
                         onEvent(AddExerciseEvent.DeleteExercise(exercise))
-                    })
+                    }
+            )
         }
 
         Row(
@@ -181,7 +198,6 @@ fun ExerciseCard(exercise: Exercise, onEvent: (AddExerciseEvent) -> Unit) {
                 modifier = Modifier.padding(start = 8.dp),
                 fontSize = 14.sp
             )
-
         }
 
         Row(

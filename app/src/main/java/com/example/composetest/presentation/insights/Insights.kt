@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -19,17 +22,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.composetest.R
-import com.example.composetest.presentation.home.TitleSection
 import com.example.composetest.presentation.theme.NavyBlue
+import com.example.composetest.presentation.theme.Typography
+import com.example.composetest.presentation.theme.WhiteBackground
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsightsScreen(viewModel: InsightsViewModel) {
     viewModel.getFieldGoals()
     val state = viewModel.state.collectAsState()
-    Scaffold {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.insights),
+                        style = Typography.h1
+                    )
+                },
+                colors = TopAppBarColors(
+                    containerColor = NavyBlue,
+                    scrolledContainerColor = NavyBlue,
+                    actionIconContentColor = NavyBlue,
+                    navigationIconContentColor = NavyBlue,
+                    titleContentColor = NavyBlue
+                )
+            )
+        }
+    ) {
         Box(modifier = Modifier
-            .background(NavyBlue)
+            .background(WhiteBackground)
             .padding(it)
             .fillMaxSize()
         ) {
@@ -50,7 +73,6 @@ fun InsightsContent(state: State<InsightsState>) {
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.padding(top = 24.dp))
-        TitleSection(title = stringResource(id = R.string.insights))
         Spacer(modifier = Modifier.padding(top = 12.dp))
         state.value.data?.let { data ->
             SemicircleView(text = stringResource(id = R.string.total_field_goals),

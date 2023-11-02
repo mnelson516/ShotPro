@@ -19,14 +19,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -51,22 +53,24 @@ import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
+import com.example.composetest.presentation.theme.WhiteBackground
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun HistoryScreen(viewModel: HistoryViewModel) {
     val state = viewModel.state.collectAsState()
-    Scaffold {
+    Scaffold(
+        topBar = {
+            HistoryTopBar(onEvent = viewModel::onEvent)
+        }
+    ) {
         Box(modifier = Modifier
-            .background(NavyBlue)
+            .background(WhiteBackground)
             .padding(it)
             .fillMaxSize()
         ) {
             Column {
                 Spacer(modifier = Modifier.padding(top = 24.dp))
-                HistoryTopBar(
-                    onEvent = viewModel::onEvent
-                )
                 FilterSection(
                     state,
                     onEvent = viewModel::onEvent,
@@ -78,39 +82,19 @@ fun HistoryScreen(viewModel: HistoryViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryTopBar(
     onEvent: (HistoryEvent) -> Unit
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .weight(0.5f)
-        ) {
-            TitleSection(title = stringResource(id = R.string.history))
-        }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .weight(0.5f)
-        ) {
-            IconButton(onClick = {
-
-            }) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    tint = Color.Companion.White,
-                    contentDescription = "Calendar Button"
-                )
-            }
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = stringResource(id = R.string.history),
+                style = Typography.h1
+            )
+        },
+        actions = {
             IconButton(onClick = {
                 onEvent(HistoryEvent.ShowFilters)
             }) {
@@ -120,8 +104,15 @@ fun HistoryTopBar(
                     contentDescription = "Filter Button"
                 )
             }
-        }
-    }
+        },
+        colors = TopAppBarColors(
+            containerColor = NavyBlue,
+            scrolledContainerColor = NavyBlue,
+            actionIconContentColor = NavyBlue,
+            navigationIconContentColor = NavyBlue,
+            titleContentColor = NavyBlue
+        )
+    )
 }
 
 @Composable
@@ -256,6 +247,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Mid Range" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -264,6 +256,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Three Pointer" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -272,6 +265,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Baseline" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -280,6 +274,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Center" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -288,6 +283,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Diagonal" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -296,6 +292,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Elbow" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -304,6 +301,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Right" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
@@ -312,6 +310,7 @@ fun SpecificFilters(
                                         )
                                     )
                                 }
+
                                 "Left" -> {
                                     onEvent(
                                         HistoryEvent.GetExercises(
