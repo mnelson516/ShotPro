@@ -31,12 +31,13 @@ import androidx.compose.ui.unit.sp
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.RedColor
 import com.example.composetest.presentation.theme.Typography
+import com.example.composetest.presentation.theme.WhiteBackground
 import com.example.composetest.presentation.util.PercentageConverter
 
 @Composable
 @Preview
 fun SemiCirclePreview() {
-    FieldGoalGauge(percentage = 50f)
+    FieldGoalGauge(percentage = 50f, "Field Goals")
     //SemicircleView(text = "Field Goals", totalShots = 20, shotsMade = 10, false)
 }
 
@@ -139,7 +140,7 @@ fun getBrushColor(percentage: Float, isThreePointer: Boolean): Brush {
 }
 
 @Composable
-fun FieldGoalGauge(percentage: Float) {
+fun FieldGoalGauge(percentage: Float, text: String) {
     Box(
         contentAlignment = Alignment.Center
     ) {
@@ -155,7 +156,7 @@ fun FieldGoalGauge(percentage: Float) {
                 startAngle = 150f,
                 sweepAngle = 240f,
                 useCenter = false,
-                style = Stroke(40f, cap = StrokeCap.Round)
+                style = Stroke(45f, cap = StrokeCap.Round)
             )
             drawArc(
                 brush = getBrushColor(percentage, false),
@@ -163,32 +164,34 @@ fun FieldGoalGauge(percentage: Float) {
                 startAngle = 150f,
                 sweepAngle = 240 * (percentage / 100),
                 useCenter = false,
-                style = Stroke(40f, cap = StrokeCap.Round)
+                style = Stroke(45f, cap = StrokeCap.Round)
             )
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.offset(y = (-12).dp)
+            modifier = Modifier.offset(y = (-16).dp)
         ) {
             Text(
                 text = "Field Goals",
-                color = Color.White,
+                color = WhiteBackground,
+                style = Typography.h4,
                 fontSize = 14.sp,
+                modifier = Modifier.offset(y = 10.dp)
             )
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(top = 4.dp)
                     .offset(x = 6.dp)
             ) {
                 Text(
                     text = percentage.toInt().toString(),
-                    style = Typography.h4,
+                    style = Typography.h2,
                     color = Color.White,
-                    fontSize = 40.sp,
+                    fontSize = 60.sp,
                 )
                 Text(
                     text = "%",
-                    style = Typography.h4,
+                    style = Typography.h2,
                     color = Color.White,
                     fontSize = 14.sp,
                 )

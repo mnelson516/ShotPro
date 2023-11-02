@@ -2,6 +2,7 @@ package com.example.composetest.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -24,31 +25,36 @@ val Typography = Typography(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        color = Color.White
+        color = Color.White,
+        platformStyle = PlatformTextStyle( includeFontPadding = false )
     ),
     h2 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        color = Color.White
+        color = Color.White,
+        platformStyle = PlatformTextStyle( includeFontPadding = false )
     ),
     h3 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
-        color = Color.White
+        color = Color.White,
+        platformStyle = PlatformTextStyle( includeFontPadding = false )
     ),
     h4 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        color = Color.White
+        color = Color.White,
+        platformStyle = PlatformTextStyle( includeFontPadding = false )
     ),
     h5 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Light,
         fontSize = 16.sp,
-        color = Color.White
+        color = Color.White,
+        platformStyle = PlatformTextStyle( includeFontPadding = false )
     ),
 
 )

@@ -23,5 +23,6 @@
     <string name="mid_range_field_goals">Mid Range</string>
     <string name="three_point_field_goals">Three Pointers</string>
     <string name="no_data_yet">No data yet</string>
+    <string name="field_goals">Field Goals</string>
 
 </resources>

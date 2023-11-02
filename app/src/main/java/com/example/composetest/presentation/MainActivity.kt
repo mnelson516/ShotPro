@@ -9,6 +9,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -55,7 +56,7 @@ import com.example.composetest.presentation.history.HistoryScreen
 import com.example.composetest.presentation.history.HistoryViewModel
 import com.example.composetest.presentation.home.HomeScreen
 import com.example.composetest.presentation.insights.InsightsViewModel
-import com.example.composetest.presentation.theme.ComposeTestTheme
+import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.util.BottomNavItem
@@ -71,8 +72,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val systemUiController: SystemUiController = rememberSystemUiController()
             systemUiController.setStatusBarColor(color = colorResource(id = R.color.navy_blue))
-
-
             Surface(
                 modifier = Modifier.fillMaxSize(),
             ) {
@@ -91,21 +90,20 @@ fun MainScreenView() {
     val insightsViewModel = viewModel<InsightsViewModel>()
     val showBottomBar = rememberSaveable { (mutableStateOf(true)) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-
     when (navBackStackEntry?.destination?.route) {
-        "add_workout" -> {
+        "Add Workout" -> {
             showBottomBar.value = false
         }
-        "home" -> {
+        "Home" -> {
             showBottomBar.value = true
         }
-        "history" -> {
+        "History" -> {
             showBottomBar.value = true
         }
-        "insights" -> {
+        "Insights" -> {
             showBottomBar.value = true
         }
-        "settings" -> {
+        "Settings" -> {
             showBottomBar.value = true
         }
     }
@@ -114,12 +112,11 @@ fun MainScreenView() {
         bottomBar = {
             if (showBottomBar.value) {
                 BottomAppBar(
+                    backgroundColor = NavyBlue,
                     modifier = Modifier
                         .height(65.dp)
-                        .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
+                        .fillMaxWidth(),
                     cutoutShape = CircleShape,
-                    backgroundColor = SecondaryBlue,
-                    elevation = 22.dp
                 ) {
                     BottomNavigationBar(navController = navController)
                 }
@@ -133,7 +130,7 @@ fun MainScreenView() {
                     shape = CircleShape,
                     backgroundColor = NeonOrange,
                     onClick = {
-                        navController.navigate("add_workout")
+                        navController.navigate("Add Workout")
                     },
                     contentColor = Color.White
                 ) {
@@ -186,14 +183,14 @@ fun NavigationGraph(
             SettingsScreen(navController)
         }
         composable(
-            "add_workout",
+            "Add Workout",
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None })
          {
              WorkoutScreen(viewModel.state.value, viewModel::onEvent, navController)
         }
         composable(
-            "add_exercise",
+            "Add Exercise",
             enterTransition = { slideInVertically() },
             exitTransition = { slideOutVertically() }
         )
@@ -220,49 +217,46 @@ fun BottomNavigationBar(navController: NavController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination
     BottomNavigation(
-        modifier = Modifier
-            .padding(12.dp, 0.dp, 12.dp, 0.dp)
-            .height(100.dp),
-        //backgroundColor = Color.White,
-        elevation = 0.dp,
-        backgroundColor = SecondaryBlue
+        backgroundColor = NavyBlue,
+        modifier = Modifier.fillMaxWidth()
     ) {
         items.forEach {
-            BottomNavigationItem(
-                icon = {
-                    it.icon?.let {
-                        Icon(
-                            painterResource(id = it),
-                            contentDescription = "",
-                            modifier = Modifier.size(35.dp),
-                            tint = Color.White
+            currentRoute?.route?.equals(it.screen_route)?.let { it1 ->
+                BottomNavigationItem(
+                    icon = {
+                        it.icon?.let {
+                            Icon(
+                                painterResource(id = it),
+                                contentDescription = "",
+                                modifier = Modifier.size(30.dp),
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    alwaysShowLabel = false,
+                    label = {
+                        Text(
+                            text = it.title,
+                            color = Color.White
                         )
-                    }
-                },
-                label = {
-                    Text(
-                        text = it.title,
-                        color = Color.White
-                    )
-                },
-                selected = currentRoute?.hierarchy?.any { it.route == currentRoute.route } == true,
-                selectedContentColor = colorResource(R.color.purple_200),
-                unselectedContentColor = Color.White.copy(alpha = 0.4f),
-                onClick = {
-                    it.screen_route.let { it1 ->
-                        if (it1.isNotEmpty()) {
-                            navController.navigate(it1) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                    },
+                    selected = it1,
+                    onClick = {
+                        it.screen_route.let { it1 ->
+                            if (it1.isNotEmpty()) {
+                                navController.navigate(it1) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
 
-                                launchSingleTop = true
-                                restoreState = true
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
@@ -270,6 +264,5 @@ fun BottomNavigationBar(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    ComposeTestTheme {
-    }
+
 }

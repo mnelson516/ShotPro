@@ -63,7 +63,7 @@ fun WorkoutScreen(state: AddExercisesState,
                     shape = CircleShape,
                     backgroundColor = NeonOrange,
                     onClick = {
-                        navController.navigate("add_exercise")
+                        navController.navigate("Add Exercise")
                     },
                     contentColor = Color.White,
                     modifier = Modifier
