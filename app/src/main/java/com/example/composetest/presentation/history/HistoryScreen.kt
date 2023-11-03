@@ -5,20 +5,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,7 +24,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -36,32 +32,43 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composetest.R
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.OrderType
-import com.example.composetest.presentation.home.TitleSection
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
+import com.example.composetest.presentation.util.Category
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun HistoryScreen(viewModel: HistoryViewModel) {
+    viewModel.onEvent(
+        HistoryEvent.InitialExercises(
+            ExerciseOrder.Default(OrderType.Default),
+        )
+    )
     val state = viewModel.state.collectAsState()
+    HistoryScreenContent(onEvent = viewModel::onEvent, state)
+}
+
+@Composable
+fun HistoryScreenContent(
+    onEvent: (HistoryEvent) -> Unit,
+    state: State<HistoryState>
+) {
     Scaffold(
         topBar = {
-            HistoryTopBar(onEvent = viewModel::onEvent)
+            HistoryTopBar(onEvent = onEvent)
         }
     ) {
         Box(modifier = Modifier
@@ -70,18 +77,25 @@ fun HistoryScreen(viewModel: HistoryViewModel) {
             .fillMaxSize()
         ) {
             Column {
-                Spacer(modifier = Modifier.padding(top = 24.dp))
                 FilterSection(
                     state,
-                    onEvent = viewModel::onEvent,
+                    onEvent = onEvent,
                 )
+                val list = state.value.exercises.groupBy { exercise ->
+                    exercise.date.format(DateTimeFormatter.ISO_DATE)
+                }.toSortedMap()
+                val categoryList = list.map { map ->
+                    Category(
+                        date = map.key.toString(),
+                        items = map.value
+                    )
+                }
 
-                HistoryExerciseList(exercises = state.value.exercises)
+                CategorizedLazyColumn(categories = categoryList)
             }
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryTopBar(
@@ -120,7 +134,11 @@ fun FilterSection(
     state: State<HistoryState>,
     onEvent: (HistoryEvent) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(NavyBlue)
+    ) {
         AnimatedVisibility(
             visible = state.value.showFilters,
             enter = fadeIn() + slideInVertically(),
@@ -345,114 +363,51 @@ fun SpecificFilters(
     }
 }
 @Composable
-fun HistoryExerciseList(exercises: List<Exercise>) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
+fun CategoryHeader(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 60.dp),
-        contentPadding = PaddingValues(16.dp)
-    ) {
-        items(exercises) {exercise ->
-            HistoryExerciseCard(exercise = exercise)
-        }
-    }
+            .background(SecondaryBlue)
+            .padding(16.dp)
+    )
 }
 
 @Composable
-fun HistoryExerciseCard(exercise: Exercise) {
-    Column(
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
-            .background(SecondaryBlue)
-            .padding(10.dp)
-            .fillMaxWidth(),
+private fun CategoryItem(
+    exercise: Exercise,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = exercise.name,
+        fontSize = 14.sp,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(WhiteBackground)
+            .padding(16.dp)
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun CategorizedLazyColumn(
+    categories: List<Category>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = exercise.name,
-                style = Typography.h5,
-                modifier = Modifier.padding(start = 8.dp),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline
-            )
-            Text(
-                text = exercise.date.format(DateTimeFormatter.ISO_DATE),
-                style = Typography.h5,
-                modifier = Modifier.padding(start = 8.dp),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .padding(top = 10.dp)
-        ) {
-            Text(
-                text = "Shots: " + exercise.shotsMade.toString() + "/" + exercise.totalShots.toString(),
-                style = Typography.h5,
-                modifier = Modifier.padding(start = 8.dp),
-                fontSize = 14.sp
-            )
-
-        }
-
-        Row(
-            modifier = Modifier
-                .padding(top = 6.dp)
-        ) {
-            Text(
-                text = "Range: ",
-                style = Typography.h5,
-                modifier = Modifier.padding(start = 8.dp),
-                fontSize = 14.sp)
-
-            Text(
-                text = exercise.range,
-                style = Typography.h5,
-                fontSize = 14.sp
-            )
-        }
-
-        Row(
-            modifier = Modifier
-                .padding(top = 6.dp)
-        ) {
-            Text(
-                text = "Angle: ",
-                style = Typography.h5,
-                modifier = Modifier.padding(start = 8.dp),
-                fontSize = 14.sp
-            )
-            Text(
-                text = exercise.location,
-                style = Typography.h5,
-                fontSize = 14.sp
-            )
-        }
-
-        if (exercise.location != "Center") {
-            Row(
-                modifier = Modifier
-                    .padding(top = 6.dp)
-            ) {
-                Text(
-                    text = "Side: ",
-                    style = Typography.h5,
-                    modifier = Modifier.padding(start = 8.dp),
-                    fontSize = 14.sp
-                )
-                Text(
-                    text = exercise.side,
-                    style = Typography.h5,
-                    fontSize = 14.sp
-                )
+        categories.forEach { category ->
+            stickyHeader {
+                CategoryHeader(category.date)
+            }
+            items(category.items) { text ->
+                CategoryItem(text)
             }
         }
     }

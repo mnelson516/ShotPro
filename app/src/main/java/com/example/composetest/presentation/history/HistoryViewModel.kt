@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,8 +52,11 @@ class HistoryViewModel @Inject constructor(
                     }
                     getExercises(event.order)
                 }
+            is HistoryEvent.InitialExercises -> {
+                getExercises(event.order)
             }
         }
+    }
 
     private fun getExercises(exerciseOrder: ExerciseOrder) {
         getExercisesJob?.cancel()
