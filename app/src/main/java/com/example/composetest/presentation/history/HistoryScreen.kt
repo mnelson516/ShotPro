@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.example.composetest.R
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.OrderType
+import com.example.composetest.presentation.insights.EmptyScreenState
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.SecondaryBlue
@@ -90,8 +91,11 @@ fun HistoryScreenContent(
                         items = map.value
                     )
                 }
-
-                CategorizedLazyColumn(categories = categoryList)
+                if (list.isEmpty()) {
+                    EmptyScreenState()
+                } else {
+                    CategorizedLazyColumn(categories = categoryList)
+                }
             }
         }
     }
@@ -370,6 +374,7 @@ fun CategoryHeader(
     Text(
         text = text,
         fontSize = 16.sp,
+        style = Typography.h3,
         fontWeight = FontWeight.Bold,
         modifier = modifier
             .fillMaxWidth()

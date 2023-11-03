@@ -163,7 +163,7 @@ fun NavigationGraph(
             enterTransition = {EnterTransition.None},
             exitTransition = { ExitTransition.None}
         ) {
-            HomeScreen(navController, insightsViewModel)
+            HomeScreen(insightsViewModel)
         }
         composable(
             BottomNavItem.History.screen_route,

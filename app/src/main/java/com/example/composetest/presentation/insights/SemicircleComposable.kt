@@ -2,6 +2,7 @@ package com.example.composetest.presentation.insights
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.RedColor
 import com.example.composetest.presentation.theme.Typography
@@ -53,6 +55,7 @@ fun SemicircleView(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
+            .border(1.dp, NavyBlue, RoundedCornerShape(10.dp))
             .background(Color.White)
     ) {
         SemiCircleArcs(
@@ -61,7 +64,8 @@ fun SemicircleView(
         )
         Text(
             text = text,
-            style = Typography.h4,
+            style = Typography.h1,
+            fontSize = 24.sp,
             color = Color.Black,
             modifier = Modifier
                 .offset(x = 0.dp, y = (-20).dp)
@@ -102,14 +106,14 @@ fun SemiCircleArcs(percentage: Float, isThreePointer: Boolean) {
         Row {
             Text(
                 text = percentage.toInt().toString(),
-                style = Typography.h4,
+                style = Typography.h2,
                 color = Color.Black,
                 fontSize = 26.sp,
                 modifier = Modifier.offset(x = 0.dp, y = (12).dp)
             )
             Text(
                 text = "%",
-                style = Typography.h4,
+                style = Typography.h2,
                 color = Color.Black,
                 fontSize = 12.sp,
                 modifier = Modifier.offset(x = 0.dp, y = (12).dp)

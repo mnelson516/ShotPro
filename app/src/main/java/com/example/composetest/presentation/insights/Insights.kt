@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.composetest.R
+import com.example.composetest.presentation.model.FieldGoalData
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
@@ -57,7 +58,11 @@ fun InsightsScreen(viewModel: InsightsViewModel) {
             .fillMaxSize()
         ) {
             Column {
-                InsightsContent(state = state)
+                state.value.data?.let { data ->
+                    InsightsContent(data)
+                } ?: run {
+                    EmptyScreenState()
+                }
             }
         }
     }
@@ -65,48 +70,44 @@ fun InsightsScreen(viewModel: InsightsViewModel) {
 }
 
 @Composable
-fun InsightsContent(state: State<InsightsState>) {
+fun InsightsContent(data: FieldGoalData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp, bottom = 60.dp)
+            .padding(start = 14.dp, end = 14.dp, bottom = 90.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.padding(top = 24.dp))
         Spacer(modifier = Modifier.padding(top = 12.dp))
-        state.value.data?.let { data ->
-            SemicircleView(text = stringResource(id = R.string.total_field_goals),
-                totalShots = data.totalFieldGoals, shotsMade = data.totalFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.right_side_field_goals),
-                totalShots = data.rightSideFieldGoals, shotsMade = data.rightSideFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.left_side_field_goals),
-                totalShots = data.leftSideFieldGoals, shotsMade = data.leftSideFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.baseline_field_goals),
-                totalShots = data.baseLineFieldGoals, shotsMade = data.baseLineFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.center_field_goals),
-                totalShots = data.centerFieldGoals, shotsMade = data.centerFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.diagonal_field_goals),
-                totalShots = data.diagonalFieldGoals, shotsMade = data.diagonalFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.elbow_field_goals),
-                totalShots = data.elbowFieldGoals, shotsMade = data.elbowFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.close_range_field_goals),
-                totalShots = data.closeRangeFieldGoals, shotsMade = data.closeRangeFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.mid_range_field_goals),
-                totalShots = data.midRangeFieldGoals, shotsMade = data.midRangeFieldGoalsMade, isThreePointer = false)
-            Spacer(modifier = Modifier.padding(top = 12.dp))
-            SemicircleView(text = stringResource(id = R.string.three_point_field_goals),
-                totalShots = data.threePointFieldGoals, shotsMade = data.threePointFieldGoalsMade, isThreePointer = true)
-        } ?: run {
-            EmptyScreenState()
-        }
+        SemicircleView(text = stringResource(id = R.string.total_field_goals),
+            totalShots = data.totalFieldGoals, shotsMade = data.totalFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.right_side_field_goals),
+            totalShots = data.rightSideFieldGoals, shotsMade = data.rightSideFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.left_side_field_goals),
+            totalShots = data.leftSideFieldGoals, shotsMade = data.leftSideFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.baseline_field_goals),
+            totalShots = data.baseLineFieldGoals, shotsMade = data.baseLineFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.center_field_goals),
+            totalShots = data.centerFieldGoals, shotsMade = data.centerFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.diagonal_field_goals),
+            totalShots = data.diagonalFieldGoals, shotsMade = data.diagonalFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.elbow_field_goals),
+            totalShots = data.elbowFieldGoals, shotsMade = data.elbowFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.close_range_field_goals),
+            totalShots = data.closeRangeFieldGoals, shotsMade = data.closeRangeFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.mid_range_field_goals),
+            totalShots = data.midRangeFieldGoals, shotsMade = data.midRangeFieldGoalsMade, isThreePointer = false)
+        Spacer(modifier = Modifier.padding(top = 12.dp))
+        SemicircleView(text = stringResource(id = R.string.three_point_field_goals),
+            totalShots = data.threePointFieldGoals, shotsMade = data.threePointFieldGoalsMade, isThreePointer = true)
     }
 }
 @Composable
