@@ -105,7 +105,6 @@ fun AddExerciseScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExerciseScreenContent(
     updateExercise: (Exercise) -> Unit,
@@ -144,7 +143,7 @@ fun AddExerciseScreenContent(
                 .padding(bottom = 12.dp)
                 .fillMaxWidth(),
             onValueChange = {
-                exerciseName = it
+                exerciseName = it.take(50)
             },
             label = {
                 Text("Exercise Name")

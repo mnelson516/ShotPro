@@ -21,7 +21,6 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
@@ -29,7 +28,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,11 +54,13 @@ import com.example.composetest.presentation.theme.WhiteBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WorkoutScreen(state: AddExercisesState,
-                  onEvent: (AddExerciseEvent) -> Unit,
-                  navController: NavController)
+fun WorkoutScreen(
+    state: AddExercisesState,
+    onEvent: (AddExerciseEvent) -> Unit,
+    navController: NavController)
 {
     val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -68,6 +69,22 @@ fun WorkoutScreen(state: AddExercisesState,
                         text = stringResource(id = R.string.new_workout),
                         style = Typography.h1
                     )
+                },
+                actions = {
+                    if (state.showSaveButton) {
+                        IconButton(onClick = {
+                            onEvent(AddExerciseEvent.SaveExercises)
+                            onEvent(AddExerciseEvent.ClearExercises)
+                            Toast.makeText(context, "Successfully Saved Exercises", Toast.LENGTH_LONG).show()
+                            navController.navigateUp()
+                        }) {
+                            Icon(
+                                Icons.Filled.Edit,
+                                stringResource(id = R.string.save_workout),
+                                tint = Color.White
+                            )
+                        }
+                    }
                 },
                 colors = TopAppBarColors(
                     containerColor = NavyBlue,
@@ -84,6 +101,7 @@ fun WorkoutScreen(state: AddExercisesState,
                         modifier = Modifier
                             .padding(start = 8.dp)
                             .clickable {
+                                onEvent(AddExerciseEvent.ClearExercises)
                                 navController.navigateUp()
                         }
                     )
@@ -92,23 +110,18 @@ fun WorkoutScreen(state: AddExercisesState,
             )
         },
         floatingActionButton = {
-            Row(
-                horizontalArrangement = Arrangement.End
+            FloatingActionButton(
+                shape = CircleShape,
+                backgroundColor = NeonOrange,
+                onClick = {
+                    navController.navigate("Add Exercise")
+                },
+                contentColor = Color.White
             ) {
-                if (state.exercises.isNotEmpty()) SaveButton(navController = navController, onEvent)
-                FloatingActionButton(
-                    shape = CircleShape,
-                    backgroundColor = NeonOrange,
-                    onClick = {
-                        navController.navigate("Add Exercise")
-                    },
-                    contentColor = Color.White,
-                    modifier = Modifier
-                        .padding(start = 14.dp)
-                ) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add icon")
-                }
-
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add icon"
+                )
             }
         },
         scaffoldState = scaffoldState
@@ -121,6 +134,7 @@ fun WorkoutScreen(state: AddExercisesState,
         ) {
             Spacer(modifier = Modifier.height(24.dp))
             if (state.exercises.isEmpty()) {
+                onEvent(AddExerciseEvent.ShowSaveButton(false))
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -136,6 +150,7 @@ fun WorkoutScreen(state: AddExercisesState,
                     }
 
             } else {
+                onEvent(AddExerciseEvent.ShowSaveButton(true))
                 ExerciseList(exercises = state.exercises, onEvent)
             }
         }
@@ -194,7 +209,7 @@ fun ExerciseCard(exercise: Exercise, onEvent: (AddExerciseEvent) -> Unit) {
         ) {
             Text(
                 text = "Shots: " + exercise.shotsMade.toString() + "/" + exercise.totalShots.toString(),
-                style = Typography.h5,
+                style = Typography.h3,
                 modifier = Modifier.padding(start = 8.dp),
                 fontSize = 14.sp
             )
@@ -206,13 +221,13 @@ fun ExerciseCard(exercise: Exercise, onEvent: (AddExerciseEvent) -> Unit) {
         ) {
             Text(
                 text = "Range: ",
-                style = Typography.h5,
+                style = Typography.h3,
                 modifier = Modifier.padding(start = 8.dp),
                 fontSize = 14.sp)
 
             Text(
                 text = exercise.range,
-                style = Typography.h5,
+                style = Typography.h3,
                 fontSize = 14.sp
             )
         }
@@ -223,33 +238,15 @@ fun ExerciseCard(exercise: Exercise, onEvent: (AddExerciseEvent) -> Unit) {
         ) {
             Text(
                 text = "Angle: ",
-                style = Typography.h5,
+                style = Typography.h3,
                 modifier = Modifier.padding(start = 8.dp),
                 fontSize = 14.sp
             )
             Text(
                 text = exercise.location,
-                style = Typography.h5,
+                style = Typography.h3,
                 fontSize = 14.sp
             )
         }
     }
-}
-
-@Composable
-fun SaveButton(navController: NavController, onEvent: (AddExerciseEvent) -> Unit) {
-    val context = LocalContext.current
-
-    ExtendedFloatingActionButton(
-        onClick = {
-            onEvent(AddExerciseEvent.SaveExercises)
-            Toast.makeText(context, "Successfully Saved Exercises", Toast.LENGTH_LONG).show()
-            navController.navigateUp()
-        },
-        icon = { Icon(Icons.Filled.Edit, stringResource(id = R.string.save_workout), tint = Color.White) },
-        text = { Text(text = stringResource(id = R.string.save_workout), color = Color.White) },
-        modifier = Modifier,
-        containerColor = NeonOrange,
-        contentColor = Color.White
-    )
 }

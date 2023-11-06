@@ -7,12 +7,15 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
@@ -39,9 +42,11 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.composetest.R
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.OrderType
+import com.example.composetest.presentation.addworkout.AddExerciseEvent
 import com.example.composetest.presentation.insights.EmptyScreenState
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
@@ -49,23 +54,29 @@ import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
 import com.example.composetest.presentation.util.Category
+import com.example.composetest.presentation.util.DateFormatter
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun HistoryScreen(viewModel: HistoryViewModel) {
+fun HistoryScreen(
+    viewModel: HistoryViewModel,
+    navController: NavController
+) {
     viewModel.onEvent(
         HistoryEvent.InitialExercises(
             ExerciseOrder.Default(OrderType.Default),
         )
     )
     val state = viewModel.state.collectAsState()
-    HistoryScreenContent(onEvent = viewModel::onEvent, state)
+    HistoryScreenContent(onEvent = viewModel::onEvent, state, navController)
 }
 
 @Composable
 fun HistoryScreenContent(
     onEvent: (HistoryEvent) -> Unit,
-    state: State<HistoryState>
+    state: State<HistoryState>,
+    navController: NavController
 ) {
     Scaffold(
         topBar = {
@@ -83,7 +94,7 @@ fun HistoryScreenContent(
                     onEvent = onEvent,
                 )
                 val list = state.value.exercises.groupBy { exercise ->
-                    exercise.date.format(DateTimeFormatter.ISO_DATE)
+                    DateFormatter.formatDate(exercise.date, LocalDateTime.now())
                 }.toSortedMap()
                 val categoryList = list.map { map ->
                     Category(
@@ -94,7 +105,11 @@ fun HistoryScreenContent(
                 if (list.isEmpty()) {
                     EmptyScreenState()
                 } else {
-                    CategorizedLazyColumn(categories = categoryList)
+                    CategorizedLazyColumn(
+                        categories = categoryList,
+                        modifier = Modifier.padding(bottom = 80.dp),
+                        navController = navController,
+                        onEvent = onEvent)
                 }
             }
         }
@@ -386,23 +401,45 @@ fun CategoryHeader(
 @Composable
 private fun CategoryItem(
     exercise: Exercise,
+    navController: NavController,
+    onEvent: (HistoryEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = exercise.name,
-        fontSize = 14.sp,
-        modifier = modifier
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
             .fillMaxWidth()
-            .background(WhiteBackground)
-            .padding(16.dp)
-    )
+            .clickable {
+                onEvent(HistoryEvent.SetDetails(exercise))
+                navController.navigate("History Details")
+            }
+    ) {
+        Text(
+            text = exercise.name,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = modifier
+                .padding(16.dp)
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.forward_arrow),
+            contentDescription = "Forward Arrow",
+            tint = Color.DarkGray,
+            modifier = modifier
+                .padding(16.dp)
+                .size(20.dp)
+            )
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CategorizedLazyColumn(
     categories: List<Category>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    onEvent: (HistoryEvent) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -411,8 +448,8 @@ private fun CategorizedLazyColumn(
             stickyHeader {
                 CategoryHeader(category.date)
             }
-            items(category.items) { text ->
-                CategoryItem(text)
+            items(category.items) { exercise ->
+                CategoryItem(exercise, navController, onEvent)
             }
         }
     }

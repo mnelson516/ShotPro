@@ -1,7 +1,6 @@
 package com.example.composetest.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,9 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.example.composetest.R
-import com.example.composetest.presentation.insights.InsightsContent
+import com.example.composetest.presentation.addworkout.AddExerciseEvent
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
@@ -24,7 +22,7 @@ import com.example.composetest.presentation.theme.WhiteBackground
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(showSnackBar: (AddExerciseEvent) -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

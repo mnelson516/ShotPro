@@ -15,7 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,7 +73,7 @@ fun InsightsContent(data: FieldGoalData) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp, bottom = 90.dp)
+            .padding(start = 14.dp, end = 14.dp, bottom = 110.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.padding(top = 24.dp))

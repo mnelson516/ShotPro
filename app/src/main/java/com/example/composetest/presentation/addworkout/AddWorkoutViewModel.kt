@@ -59,6 +59,11 @@ class AddWorkoutViewModel @Inject constructor(
                     }
                 }
             }
+            is AddExerciseEvent.ClearExercises -> {
+                _state.value = state.value.copy(
+                    exercises = emptyList()
+                )
+            }
         }
     }
 

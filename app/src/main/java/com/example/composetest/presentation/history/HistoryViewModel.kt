@@ -55,6 +55,11 @@ class HistoryViewModel @Inject constructor(
             is HistoryEvent.InitialExercises -> {
                 getExercises(event.order)
             }
+            is HistoryEvent.SetDetails -> {
+                _state.value = state.value.copy(
+                    currentDetails = event.exercise
+                )
+            }
         }
     }
 

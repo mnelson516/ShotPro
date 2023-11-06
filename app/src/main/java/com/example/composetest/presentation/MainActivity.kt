@@ -15,10 +15,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -31,11 +29,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -43,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -57,12 +54,12 @@ import com.example.composetest.presentation.addworkout.AddWorkoutViewModel
 import com.example.composetest.presentation.addworkout.WorkoutScreen
 import com.example.composetest.presentation.insights.InsightsScreen
 import com.example.composetest.presentation.history.HistoryScreen
+import com.example.composetest.presentation.history.HistoryScreenDetails
 import com.example.composetest.presentation.history.HistoryViewModel
 import com.example.composetest.presentation.home.HomeScreen
 import com.example.composetest.presentation.insights.InsightsViewModel
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
-import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.util.BottomNavItem
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -143,7 +140,13 @@ fun MainScreenView() {
             }
         }
     ) {
-        NavigationGraph(navController = navController, viewModel, historyViewModel, insightsViewModel)
+        NavigationGraph(
+            navController = navController,
+            viewModel,
+            historyViewModel,
+            insightsViewModel,
+            showSnackBar = viewModel::onEvent
+        )
     }
 }
 
@@ -152,7 +155,8 @@ fun NavigationGraph(
     navController: NavHostController,
     viewModel: AddWorkoutViewModel,
     historyViewModel: HistoryViewModel,
-    insightsViewModel: InsightsViewModel
+    insightsViewModel: InsightsViewModel,
+    showSnackBar: (AddExerciseEvent) -> Unit
 ) {
     NavHost(
         navController,
@@ -170,7 +174,7 @@ fun NavigationGraph(
             enterTransition = {EnterTransition.None},
             exitTransition = { ExitTransition.None}
         ) {
-            HistoryScreen(historyViewModel)
+            HistoryScreen(historyViewModel, navController)
         }
         composable(
             BottomNavItem.Insights.screen_route,
@@ -184,7 +188,7 @@ fun NavigationGraph(
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None}
         ) {
-            SettingsScreen()
+            SettingsScreen(showSnackBar)
         }
         composable(
             "Add Workout",
@@ -205,6 +209,13 @@ fun NavigationGraph(
                 },
                 navController = navController
              )
+        }
+        composable(
+            "History Details",
+            enterTransition = { slideInHorizontally() + fadeIn() },
+            exitTransition = { slideOutHorizontally() + fadeOut() }
+        ) {
+            HistoryScreenDetails(historyViewModel.state.collectAsState(), navController)
         }
     }
 }

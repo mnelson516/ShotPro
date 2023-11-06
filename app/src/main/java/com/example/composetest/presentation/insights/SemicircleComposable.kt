@@ -35,12 +35,12 @@ import com.example.composetest.presentation.theme.RedColor
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
 import com.example.composetest.presentation.util.PercentageConverter
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 @Preview
 fun SemiCirclePreview() {
-    FieldGoalGauge(percentage = 50f, "Field Goals")
-    //SemicircleView(text = "Field Goals", totalShots = 20, shotsMade = 10, false)
+    DetailsArc(shotsMade = 10, totalShots = 20, isThreePointer = false)
 }
 
 @Composable
@@ -123,6 +123,67 @@ fun SemiCircleArcs(percentage: Float, isThreePointer: Boolean) {
     }
 }
 
+@Composable
+fun DetailsArc(shotsMade: Int, totalShots: Int, isThreePointer: Boolean) {
+    val percentage = PercentageConverter.convertToPercentage(shotsMade, totalShots).toFloat()
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .border(1.dp, NavyBlue, RoundedCornerShape(10.dp))
+            .background(Color.White)
+    ) {
+        Text(
+            text = "Results:",
+            style = Typography.h2,
+            color = Color.Black,
+            fontSize = 26.sp,
+            modifier = Modifier.offset(x = 0.dp, y = (18).dp)
+        )
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Canvas(
+                modifier = Modifier
+                    .size(175.dp)
+                    .clipToBounds()
+                    .padding(14.dp)
+            ) {
+                drawArc(
+                    brush = SolidColor(Color.LightGray),
+                    size = Size(size.width, size.height),
+                    startAngle = 180f,
+                    sweepAngle = 180f,
+                    topLeft = Offset(0f, size.width.times(0.25f)),
+                    useCenter = false,
+                    style = Stroke(35f, cap = StrokeCap.Round)
+                )
+                drawArc(
+                    brush = getBrushColor(percentage, isThreePointer),
+                    size = Size(size.width, size.height),
+                    startAngle = 180f,
+                    sweepAngle = 180 * (percentage / 100),
+                    topLeft = Offset(0f, size.width.times(0.25f)),
+                    useCenter = false,
+                    style = Stroke(35f, cap = StrokeCap.Round)
+                )
+            }
+
+            Text(
+                text = "$shotsMade/$totalShots",
+                style = Typography.h2,
+                color = Color.Black,
+                fontSize = 26.sp,
+                modifier = Modifier.offset(x = 0.dp, y = (12).dp)
+            )
+        }
+
+
+
+    }
+}
+
 fun getBrushColor(percentage: Float, isThreePointer: Boolean): Brush {
     if (isThreePointer) {
         return if (percentage < 30) {
@@ -176,7 +237,7 @@ fun FieldGoalGauge(percentage: Float, text: String) {
             modifier = Modifier.offset(y = (-16).dp)
         ) {
             Text(
-                text = "Field Goals",
+                text = text,
                 color = WhiteBackground,
                 style = Typography.h4,
                 fontSize = 14.sp,
