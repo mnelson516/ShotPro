@@ -212,8 +212,8 @@ fun NavigationGraph(
         }
         composable(
             "History Details",
-            enterTransition = { slideInHorizontally() + fadeIn() },
-            exitTransition = { slideOutHorizontally() + fadeOut() }
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() }
         ) {
             HistoryScreenDetails(historyViewModel.state.collectAsState(), navController)
         }
