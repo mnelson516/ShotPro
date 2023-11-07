@@ -22,8 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composetest.R
-import com.example.composetest.data.UserPreferences
-import com.example.composetest.presentation.history.HistoryEvent
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground

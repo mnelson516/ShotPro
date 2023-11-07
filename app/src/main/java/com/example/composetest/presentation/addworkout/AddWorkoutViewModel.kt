@@ -64,6 +64,11 @@ class AddWorkoutViewModel @Inject constructor(
                     exercises = emptyList()
                 )
             }
+            is AddExerciseEvent.ShowDialog -> {
+                _state.value = state.value.copy(
+                    showTipDialog = event.showDialog
+                )
+            }
         }
     }
 

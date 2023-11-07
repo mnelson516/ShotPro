@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.composetest.data.UserPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,7 +41,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-     fun updateShowTips(tipsEnabled: Boolean) {
+     private fun updateShowTips(tipsEnabled: Boolean) {
         viewModelScope.launch {
             dataStore.edit { preferences ->
                 preferences[PreferencesKeys.TIPS_ENABLED] = tipsEnabled

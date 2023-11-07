@@ -1,7 +1,6 @@
 package com.example.composetest.presentation
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,9 +39,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -176,6 +172,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             HomeScreen(insightsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
             BottomNavItem.History.screen_route,
@@ -183,6 +180,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             HistoryScreen(historyViewModel, navController)
+            viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
             BottomNavItem.Insights.screen_route,
@@ -190,6 +188,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             InsightsScreen(insightsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
             BottomNavItem.Settings.screen_route,
@@ -197,13 +196,14 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             SettingsScreen(settingsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
             "Add Workout",
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None })
          {
-             WorkoutScreen(viewModel.state.value, viewModel::onEvent, navController)
+             WorkoutScreen(viewModel.state.value, viewModel::onEvent, navController, settingsViewModel)
         }
         composable(
             "Add Exercise",

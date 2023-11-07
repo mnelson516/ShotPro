@@ -8,6 +8,7 @@
     <string name="feature_workout_desc">Sample workouts from some of your favorite pros</string>
     <string name="add_exercise">Add New Exercise</string>
     <string name="no_exercises_added">No Exercises Added Yet</string>
+    <string name="tip">Workout Tip</string>
     <string name="save_workout">Save</string>
     <string name="history">History</string>
     <string name="insights">Insights</string>
@@ -28,5 +29,23 @@
     <string name="no_data_available">No Data Available</string>
     <string name="your_breakdown">Your Breakdown</string>
     <string name="tips_enabled">Tips Enabled</string>
+    <string name="one_motion">When shooting, try to shoot one fluid motion</string>
+    <string name="form_shooting">When starting your workout, start close to the rim and focus on technique before increasing range</string>
+    <string name="no_perfect">There is no single perfect form for every shooter, find what works best for you and stick to it!</string>
+    <string name="on_each_miss">On each miss, focus on what went wrong and how to correct that</string>
+    <string name="resist_fatigue">Ensure that your technique does not breakdown as you fatigue</string>
+    <string name="try_filming">Try filming yourself shooting. It may highlight issues you don\'t realize are happening</string>
+    <string name="balance">When doing moving shooting drills, focus on maintaining balance while shooting</string>
+    <string name="eyes_on_rim">Try and lock your eyes on the rim as soon as possible</string>
+    <string name="confidence">Confidence is key.\nFocus on positive reinforcement and build confidence through practice</string>
+    <string name="consistency">Consistency is the most important attribute in becoming a good shooter</string>
+    <string name="shape">Get in shape.\nYou need to be able to shoot after playing intense defense</string>
+    <string name="full_speed">Practice at full speed.\nYour exercises should replicate in-game scenarios</string>
+    <string name="mental_toughness">Don\'t be discouraged by missed shots. Always focus on the next shot</string>
+    <string name="reflect">If you get discouraged, reflect on your progress and how far you\'ve come</string>
+    <string name="better_shooters">Surround yourself with better shooters and players than yourself</string>
+    <string name="sleep">Focusing on sleep is one of the most important aspects to your performance</string>
+    <string name="fast_release">Focusing on developing a fast release to get shots off easier in games</string>
+    <string name="disable_tips">You can disable tips at any time on the settings screen</string>
 
 </resources>
