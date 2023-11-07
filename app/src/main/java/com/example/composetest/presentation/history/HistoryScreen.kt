@@ -109,7 +109,8 @@ fun HistoryScreenContent(
                         categories = categoryList,
                         modifier = Modifier.padding(bottom = 80.dp),
                         navController = navController,
-                        onEvent = onEvent)
+                        onEvent = onEvent
+                    )
                 }
             }
         }

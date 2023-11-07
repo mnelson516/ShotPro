@@ -1,28 +1,37 @@
-package com.example.composetest.presentation
+package com.example.composetest.presentation.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composetest.R
-import com.example.composetest.presentation.addworkout.AddExerciseEvent
+import com.example.composetest.data.UserPreferences
+import com.example.composetest.presentation.history.HistoryEvent
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SettingsScreen(showSnackBar: (AddExerciseEvent) -> Unit) {
+fun SettingsScreen(viewModel: SettingsViewModel) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -44,11 +53,37 @@ fun SettingsScreen(showSnackBar: (AddExerciseEvent) -> Unit) {
     ) {
         Column(
             modifier = Modifier
-            .background(WhiteBackground)
-            .padding(it)
-            .fillMaxSize()
+                .background(WhiteBackground)
+                .padding(it)
+                .fillMaxSize()
         ) {
-
+            SettingsContent(state, viewModel::onEvent)
         }
+    }
+}
+
+@Composable
+fun SettingsContent(
+    state: State<UserPreferences>,
+    onEvent: (SettingsEvent) -> Unit
+) {
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.tips_enabled),
+            color = Color.Black,
+            style = Typography.h2
+        )
+        Switch(
+            checked = state.value.tipsEnabled,
+            onCheckedChange = { tipsEnabled ->
+                onEvent(SettingsEvent.ToggleShowTips(tipsEnabled))
+            }
+        )
     }
 }

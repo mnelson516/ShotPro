@@ -27,5 +27,6 @@
     <string name="field_goals">Field Goals</string>
     <string name="no_data_available">No Data Available</string>
     <string name="your_breakdown">Your Breakdown</string>
+    <string name="tips_enabled">Tips Enabled</string>
 
 </resources>

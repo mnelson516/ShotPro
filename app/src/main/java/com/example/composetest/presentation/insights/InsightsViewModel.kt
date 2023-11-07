@@ -24,7 +24,7 @@ class InsightsViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     fun onEvent(event: InsightsEvent) {
-       // TODO Add Events
+
     }
 
     fun getFieldGoals() {

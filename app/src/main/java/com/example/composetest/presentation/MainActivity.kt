@@ -1,6 +1,7 @@
 package com.example.composetest.presentation
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +40,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -58,6 +62,8 @@ import com.example.composetest.presentation.history.HistoryScreenDetails
 import com.example.composetest.presentation.history.HistoryViewModel
 import com.example.composetest.presentation.home.HomeScreen
 import com.example.composetest.presentation.insights.InsightsViewModel
+import com.example.composetest.presentation.settings.SettingsScreen
+import com.example.composetest.presentation.settings.SettingsViewModel
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.util.BottomNavItem
@@ -89,6 +95,8 @@ fun MainScreenView() {
     val viewModel = viewModel<AddWorkoutViewModel>()
     val historyViewModel = viewModel<HistoryViewModel>()
     val insightsViewModel = viewModel<InsightsViewModel>()
+    val settingsViewModel = viewModel<SettingsViewModel>()
+    settingsViewModel.getTipPreference()
     val showBottomBar = rememberSaveable { (mutableStateOf(true)) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     when (navBackStackEntry?.destination?.route) {
@@ -145,7 +153,7 @@ fun MainScreenView() {
             viewModel,
             historyViewModel,
             insightsViewModel,
-            showSnackBar = viewModel::onEvent
+            settingsViewModel
         )
     }
 }
@@ -156,7 +164,7 @@ fun NavigationGraph(
     viewModel: AddWorkoutViewModel,
     historyViewModel: HistoryViewModel,
     insightsViewModel: InsightsViewModel,
-    showSnackBar: (AddExerciseEvent) -> Unit
+    settingsViewModel: SettingsViewModel
 ) {
     NavHost(
         navController,
@@ -188,7 +196,7 @@ fun NavigationGraph(
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None}
         ) {
-            SettingsScreen(showSnackBar)
+            SettingsScreen(settingsViewModel)
         }
         composable(
             "Add Workout",
