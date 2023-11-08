@@ -3,6 +3,7 @@ package com.example.composetest.presentation.insights
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,7 +49,8 @@ fun SemicircleView(
     text: String,
     totalShots: Int,
     shotsMade: Int,
-    isThreePointer: Boolean
+    isThreePointer: Boolean,
+    onClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,6 +59,7 @@ fun SemicircleView(
             .clip(RoundedCornerShape(10.dp))
             .border(1.dp, NavyBlue, RoundedCornerShape(10.dp))
             .background(Color.White)
+            .clickable { onClick() }
     ) {
         SemiCircleArcs(
             percentage = PercentageConverter.convertToPercentage(shotsMade, totalShots).toFloat(),

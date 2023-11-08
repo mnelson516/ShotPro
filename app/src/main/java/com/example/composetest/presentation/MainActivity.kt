@@ -57,6 +57,7 @@ import com.example.composetest.presentation.history.HistoryScreen
 import com.example.composetest.presentation.history.HistoryScreenDetails
 import com.example.composetest.presentation.history.HistoryViewModel
 import com.example.composetest.presentation.home.HomeScreen
+import com.example.composetest.presentation.insights.GraphScreen
 import com.example.composetest.presentation.insights.InsightsViewModel
 import com.example.composetest.presentation.settings.SettingsScreen
 import com.example.composetest.presentation.settings.SettingsViewModel
@@ -110,6 +111,9 @@ fun MainScreenView() {
         }
         "Settings" -> {
             showBottomBar.value = true
+        }
+        "Graph Screen" -> {
+            showBottomBar.value = false
         }
     }
 
@@ -187,7 +191,7 @@ fun NavigationGraph(
             enterTransition = {EnterTransition.None},
             exitTransition = { ExitTransition.None}
         ) {
-            InsightsScreen(insightsViewModel)
+            InsightsScreen(insightsViewModel, historyViewModel, navController)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -224,6 +228,13 @@ fun NavigationGraph(
             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() }
         ) {
             HistoryScreenDetails(historyViewModel.state.collectAsState(), navController)
+        }
+        composable(
+            "Graph Screen",
+            enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
+            exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() }
+        ) {
+            GraphScreen(navController = navController, historyViewModel)
         }
     }
 }

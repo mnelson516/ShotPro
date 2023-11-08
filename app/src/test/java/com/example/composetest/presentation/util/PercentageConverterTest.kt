@@ -1,8 +1,10 @@
 package com.example.composetest.presentation.util
 
+import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.model.FieldGoalData
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import java.time.LocalDateTime
 
 class PercentageConverterTest{
     @Test
@@ -250,6 +252,7 @@ class PercentageConverterTest{
         assertThat(result.second).matches("100")
     }
 
+    @Test
     fun `max percentage elbow`() {
         val result = PercentageConverter.getBestPercentage(
             FieldGoalData(
@@ -279,6 +282,7 @@ class PercentageConverterTest{
         assertThat(result.second).matches("100")
     }
 
+    @Test
     fun `max percentage center`() {
         val result = PercentageConverter.getBestPercentage(
             FieldGoalData(

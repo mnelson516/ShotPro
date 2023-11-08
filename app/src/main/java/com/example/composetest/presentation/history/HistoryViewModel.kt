@@ -50,14 +50,20 @@ class HistoryViewModel @Inject constructor(
                         state.value.currentFilter.orderType == event.order.orderType) {
                         return
                     }
+                    _state.value = state.value.copy(
+                        detailsText = setDetailsString(event.order)
+                    )
                     getExercises(event.order)
                 }
             is HistoryEvent.InitialExercises -> {
                 getExercises(event.order)
+                _state.value = state.value.copy(
+                    detailsText = "Total Shots",
+                )
             }
             is HistoryEvent.SetDetails -> {
                 _state.value = state.value.copy(
-                    currentDetails = event.exercise
+                    currentDetails = event.exercise,
                 )
             }
         }
@@ -108,6 +114,20 @@ class HistoryViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
+    private fun setDetailsString(exerciseOrder: ExerciseOrder): String {
+        return when (exerciseOrder) {
+            is ExerciseOrder.Baseline -> "Baseline"
+            is ExerciseOrder.Center -> "Center"
+            is ExerciseOrder.CloseRange -> "Close Range"
+            is ExerciseOrder.Default -> "Default"
+            is ExerciseOrder.Diagonal -> "Diagonal"
+            is ExerciseOrder.Elbow -> "Elbow"
+            is ExerciseOrder.Left -> "Left Side"
+            is ExerciseOrder.MidRange -> "Mid Range"
+            is ExerciseOrder.Right -> "Right Side"
+            is ExerciseOrder.ThreePointRange -> "Three Pointer"
+        }
+    }
 
     private fun convertExerciseEntity(list: List<ExerciseEntity>) : List<Exercise> {
         val returnList = mutableListOf<Exercise>()

@@ -20,7 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.composetest.R
+import com.example.composetest.domain.ExerciseOrder
+import com.example.composetest.domain.OrderType
+import com.example.composetest.presentation.history.HistoryEvent
+import com.example.composetest.presentation.history.HistoryViewModel
 import com.example.composetest.presentation.model.FieldGoalData
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.Typography
@@ -29,7 +34,7 @@ import com.example.composetest.presentation.theme.WhiteBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsightsScreen(viewModel: InsightsViewModel) {
+fun InsightsScreen(viewModel: InsightsViewModel, historyViewModel: HistoryViewModel, navController: NavController) {
     viewModel.getFieldGoals()
     val state = viewModel.state.collectAsState()
     Scaffold(
@@ -58,7 +63,7 @@ fun InsightsScreen(viewModel: InsightsViewModel) {
         ) {
             Column {
                 state.value.data?.let { data ->
-                    InsightsContent(data)
+                    InsightsContent(data, navController, historyViewModel)
                 } ?: run {
                     EmptyScreenState()
                 }
@@ -69,44 +74,135 @@ fun InsightsScreen(viewModel: InsightsViewModel) {
 }
 
 @Composable
-fun InsightsContent(data: FieldGoalData) {
+fun InsightsContent(data: FieldGoalData, navController: NavController, historyViewModel: HistoryViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 14.dp, end = 14.dp, bottom = 110.dp)
+            .padding(start = 14.dp, end = 14.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.padding(top = 24.dp))
-        Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.total_field_goals),
-            totalShots = data.totalFieldGoals, shotsMade = data.totalFieldGoalsMade, isThreePointer = false)
+            totalShots = data.totalFieldGoals,
+            shotsMade = data.totalFieldGoalsMade,
+            isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.InitialExercises(
+                        ExerciseOrder.Default(OrderType.Default),
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.right_side_field_goals),
-            totalShots = data.rightSideFieldGoals, shotsMade = data.rightSideFieldGoalsMade, isThreePointer = false)
+            totalShots = data.rightSideFieldGoals, shotsMade = data.rightSideFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.Right(OrderType.Side),
+                        "Right"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.left_side_field_goals),
-            totalShots = data.leftSideFieldGoals, shotsMade = data.leftSideFieldGoalsMade, isThreePointer = false)
+            totalShots = data.leftSideFieldGoals, shotsMade = data.leftSideFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.Left(OrderType.Side),
+                        "Left"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.baseline_field_goals),
-            totalShots = data.baseLineFieldGoals, shotsMade = data.baseLineFieldGoalsMade, isThreePointer = false)
+            totalShots = data.baseLineFieldGoals, shotsMade = data.baseLineFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.Baseline(OrderType.Location),
+                        "Right"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.center_field_goals),
-            totalShots = data.centerFieldGoals, shotsMade = data.centerFieldGoalsMade, isThreePointer = false)
+            totalShots = data.centerFieldGoals, shotsMade = data.centerFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.Center(OrderType.Location),
+                        "Center"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.diagonal_field_goals),
-            totalShots = data.diagonalFieldGoals, shotsMade = data.diagonalFieldGoalsMade, isThreePointer = false)
+            totalShots = data.diagonalFieldGoals, shotsMade = data.diagonalFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.Diagonal(OrderType.Location),
+                        "Diagonal"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.elbow_field_goals),
-            totalShots = data.elbowFieldGoals, shotsMade = data.elbowFieldGoalsMade, isThreePointer = false)
+            totalShots = data.elbowFieldGoals, shotsMade = data.elbowFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.Elbow(OrderType.Location),
+                        "Elbow"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.close_range_field_goals),
-            totalShots = data.closeRangeFieldGoals, shotsMade = data.closeRangeFieldGoalsMade, isThreePointer = false)
+            totalShots = data.closeRangeFieldGoals, shotsMade = data.closeRangeFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.CloseRange(OrderType.Range),
+                        "Close Range"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.mid_range_field_goals),
-            totalShots = data.midRangeFieldGoals, shotsMade = data.midRangeFieldGoalsMade, isThreePointer = false)
+            totalShots = data.midRangeFieldGoals, shotsMade = data.midRangeFieldGoalsMade, isThreePointer = false,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.MidRange(OrderType.Range),
+                        "Mid Range"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
         Spacer(modifier = Modifier.padding(top = 12.dp))
         SemicircleView(text = stringResource(id = R.string.three_point_field_goals),
-            totalShots = data.threePointFieldGoals, shotsMade = data.threePointFieldGoalsMade, isThreePointer = true)
+            totalShots = data.threePointFieldGoals, shotsMade = data.threePointFieldGoalsMade, isThreePointer = true,
+            onClick = {
+                historyViewModel.onEvent(
+                    HistoryEvent.GetExercises(
+                        ExerciseOrder.ThreePointRange(OrderType.Range),
+                        "Three Pointer"
+                    )
+                )
+                navController.navigate("Graph Screen")
+            })
+        Spacer(modifier = Modifier.padding(top = 90.dp))
     }
 }
 @Composable

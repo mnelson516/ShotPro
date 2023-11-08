@@ -1,5 +1,6 @@
 package com.example.composetest.presentation.util
 
+import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.model.FieldGoalData
 import kotlin.math.roundToInt
 
@@ -133,5 +134,15 @@ object PercentageConverter {
         } else {
             return Pair("None", "0")
         }
+    }
+
+    fun getPointAverage(list: List<Exercise>): Float {
+        val averageList = mutableListOf<Float>()
+
+        for (exercise in list) {
+            averageList.add(exercise.shotsMade.toFloat() / exercise.totalShots.toFloat())
+        }
+
+        return (averageList.average() * 100).toFloat()
     }
 }
