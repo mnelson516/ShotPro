@@ -97,11 +97,6 @@ fun MainScreenView() {
     val insightsViewModel = viewModel<InsightsViewModel>()
     val settingsViewModel = viewModel<SettingsViewModel>()
     settingsViewModel.getTipPreference()
-    historyViewModel.onEvent(
-        HistoryEvent.InitialExercises(
-            ExerciseOrder.Default(OrderType.Default),
-        )
-    )
     val showBottomBar = rememberSaveable { (mutableStateOf(true)) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     when (navBackStackEntry?.destination?.route) {

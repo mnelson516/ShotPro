@@ -64,6 +64,11 @@ fun HistoryScreen(
     viewModel: HistoryViewModel,
     navController: NavController
 ) {
+    viewModel.onEvent(
+        HistoryEvent.InitialExercises(
+            ExerciseOrder.Default(OrderType.Default),
+        )
+    )
     val state = viewModel.state.collectAsState()
     HistoryScreenContent(onEvent = viewModel::onEvent, state, navController)
 }
