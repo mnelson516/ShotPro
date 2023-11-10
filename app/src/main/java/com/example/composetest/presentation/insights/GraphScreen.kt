@@ -134,7 +134,7 @@ fun GraphScreen(
                 style = Typography.h3,
                 color = Color.Black,
                 fontSize = 18.sp,
-                modifier = Modifier.padding(start = 12.dp, top = 24.dp, bottom = 12.dp)
+                modifier = Modifier.padding(start = 12.dp, bottom = 12.dp)
             )
 
             if (pointList.isNotEmpty()) {
@@ -174,12 +174,18 @@ fun SingleLineChartWithGridLines(pointsData: List<Point>, pointsMap: HashMap<Int
             lines = listOf(
                 Line(
                     dataPoints = pointsData,
-                    LineStyle(),
-                    IntersectionPoint(),
+                    LineStyle(
+                        color = NavyBlue
+                    ),
+                    IntersectionPoint(
+                        color = NavyBlue
+                    ),
                     SelectionHighlightPoint(
                         color = NeonOrange
                     ),
-                    ShadowUnderLine(),
+                    ShadowUnderLine(
+                        color = NavyBlue
+                    ),
                     SelectionHighlightPopUp(
                         popUpLabel = { x, y ->
                             pointsMap[x.toInt()]!! + ": " + y.toInt() + "%"
