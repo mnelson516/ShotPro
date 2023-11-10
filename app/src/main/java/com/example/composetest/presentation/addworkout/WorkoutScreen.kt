@@ -91,7 +91,6 @@ fun WorkoutScreen(
                     if (state.showSaveButton) {
                         IconButton(onClick = {
                             onEvent(AddExerciseEvent.SaveExercises)
-                            onEvent(AddExerciseEvent.ClearExercises)
                             Toast.makeText(context, "Successfully Saved Exercises", Toast.LENGTH_LONG).show()
                             navController.navigateUp()
                         }) {

@@ -26,7 +26,8 @@ class AddWorkoutViewModel @Inject constructor(
         when (event) {
             is AddExerciseEvent.AddExercise -> {
                 val newList: MutableList<Exercise> = state.value.exercises.toMutableList()
-                newList.add(event.exercise)
+                for (i in 0 .. 50)  newList.add(event.exercise)
+
                 _state.value = state.value.copy(
                     exercises = newList.toList()
                 )

@@ -1,5 +1,7 @@
 package com.example.composetest.presentation.history
 
+import androidx.paging.compose.LazyPagingItems
+import com.example.composetest.domain.ExerciseEntity
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.OrderType
 import com.example.composetest.presentation.model.Exercise

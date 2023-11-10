@@ -67,6 +67,7 @@ import com.example.composetest.presentation.util.BottomNavItem
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 
 @AndroidEntryPoint
@@ -176,6 +177,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             HomeScreen(insightsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -184,6 +186,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             HistoryScreen(historyViewModel, navController)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -192,6 +195,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             InsightsScreen(insightsViewModel, historyViewModel, navController)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -200,6 +204,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             SettingsScreen(settingsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -293,10 +298,4 @@ fun BottomNavigationBar(navController: NavController) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-
 }

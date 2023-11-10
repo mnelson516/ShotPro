@@ -88,8 +88,9 @@ fun InsightsContent(data: FieldGoalData, navController: NavController, historyVi
             isThreePointer = false,
             onClick = {
                 historyViewModel.onEvent(
-                    HistoryEvent.InitialExercises(
+                    HistoryEvent.GetExercises(
                         ExerciseOrder.Default(OrderType.Default),
+                        ""
                     )
                 )
                 navController.navigate("Graph Screen")

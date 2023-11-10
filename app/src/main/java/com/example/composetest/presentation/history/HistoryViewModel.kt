@@ -2,14 +2,18 @@ package com.example.composetest.presentation.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.composetest.data.mapToExercise
 import com.example.composetest.domain.ExerciseEntity
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.ExerciseRepository
+import com.example.composetest.domain.GetAllExercisesPagerUseCase
 import com.example.composetest.domain.OrderType
 import com.example.composetest.presentation.model.Exercise
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
@@ -21,13 +25,52 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private var exerciseRepository: ExerciseRepository
+    private val getAllExercisesPagerUseCase: GetAllExercisesPagerUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HistoryState())
     val state = _state.asStateFlow()
 
-    private var getExercisesJob: Job? = null
+    val exercisesPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .call()
+        .cachedIn(viewModelScope)
+
+    val rightPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callRight()
+        .cachedIn(viewModelScope)
+
+    val leftPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callLeft()
+        .cachedIn(viewModelScope)
+
+    val closePagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callClose()
+        .cachedIn(viewModelScope)
+
+    val midPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callMid()
+        .cachedIn(viewModelScope)
+
+    val threePagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callThree()
+        .cachedIn(viewModelScope)
+
+    val baselinePagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callBaseline()
+        .cachedIn(viewModelScope)
+
+    val diagonalPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callDiagonal()
+        .cachedIn(viewModelScope)
+
+    val elbowPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callElbow()
+        .cachedIn(viewModelScope)
+
+    val centerPagingSource: Flow<PagingData<ExerciseEntity>> = getAllExercisesPagerUseCase
+        .callCenter()
+        .cachedIn(viewModelScope)
+
 
     fun onEvent(event: HistoryEvent) {
         when (event) {
@@ -53,65 +96,13 @@ class HistoryViewModel @Inject constructor(
                     _state.value = state.value.copy(
                         detailsText = setDetailsString(event.order)
                     )
-                    getExercises(event.order)
                 }
-            is HistoryEvent.InitialExercises -> {
-                getExercises(event.order)
-                _state.value = state.value.copy(
-                    detailsText = "Total Shots",
-                )
-            }
             is HistoryEvent.SetDetails -> {
                 _state.value = state.value.copy(
                     currentDetails = event.exercise,
                 )
             }
         }
-    }
-
-    private fun getExercises(exerciseOrder: ExerciseOrder) {
-        getExercisesJob?.cancel()
-        getExercisesJob = exerciseRepository.fetchExercises()
-            .map {
-                when (exerciseOrder) {
-                    is ExerciseOrder.Default -> {
-                        it
-                    }
-                    is ExerciseOrder.Baseline -> {
-                        it.filter { exercise -> exercise.location == "Baseline" }
-                    }
-                    is ExerciseOrder.Center -> {
-                        it.filter { exercise -> exercise.location == "Center" }
-                    }
-                    is ExerciseOrder.Diagonal -> {
-                        it.filter { exercise -> exercise.location == "Diagonal" }
-                    }
-                    is ExerciseOrder.Elbow -> {
-                        it.filter { exercise -> exercise.location == "Elbow" }
-                    }
-                    is ExerciseOrder.Left -> {
-                        it.filter { exercise -> exercise.side == "Left" }
-                    }
-                    is ExerciseOrder.Right -> {
-                        it.filter { exercise -> exercise.side == "Right" }
-                    }
-                    is ExerciseOrder.CloseRange -> {
-                        it.filter { exercise -> exercise.range == "Baseline" }
-                    }
-                    is ExerciseOrder.MidRange -> {
-                        it.filter { exercise -> exercise.range == "Mid Range" }
-                    }
-                    is ExerciseOrder.ThreePointRange -> {
-                        it.filter { exercise -> exercise.range == "Three Pointer" }
-                    }
-                }
-            }
-            .onEach { exercises ->
-                _state.value = state.value.copy(
-                    exercises = convertExerciseEntity(exercises),
-                    currentFilter = exerciseOrder
-                )
-            }.launchIn(viewModelScope)
     }
 
     private fun setDetailsString(exerciseOrder: ExerciseOrder): String {

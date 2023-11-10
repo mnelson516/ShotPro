@@ -43,40 +43,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.example.composetest.R
+import com.example.composetest.data.mapToExercise
+import com.example.composetest.domain.ExerciseEntity
 import com.example.composetest.domain.ExerciseOrder
 import com.example.composetest.domain.OrderType
-import com.example.composetest.presentation.addworkout.AddExerciseEvent
-import com.example.composetest.presentation.insights.EmptyScreenState
 import com.example.composetest.presentation.model.Exercise
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.SecondaryBlue
 import com.example.composetest.presentation.theme.Typography
 import com.example.composetest.presentation.theme.WhiteBackground
 import com.example.composetest.presentation.util.Category
-import com.example.composetest.presentation.util.DateFormatter
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel,
     navController: NavController
 ) {
-    viewModel.onEvent(
-        HistoryEvent.InitialExercises(
-            ExerciseOrder.Default(OrderType.Default),
-        )
-    )
     val state = viewModel.state.collectAsState()
-    HistoryScreenContent(onEvent = viewModel::onEvent, state, navController)
+    HistoryScreenContent(onEvent = viewModel::onEvent, state, navController, viewModel)
 }
 
 @Composable
 fun HistoryScreenContent(
     onEvent: (HistoryEvent) -> Unit,
     state: State<HistoryState>,
-    navController: NavController
+    navController: NavController,
+    viewModel: HistoryViewModel
 ) {
     Scaffold(
         topBar = {
@@ -93,25 +91,12 @@ fun HistoryScreenContent(
                     state,
                     onEvent = onEvent,
                 )
-                val list = state.value.exercises.groupBy { exercise ->
-                    DateFormatter.formatDate(exercise.date, LocalDateTime.now())
-                }.toSortedMap()
-                val categoryList = list.map { map ->
-                    Category(
-                        date = map.key.toString(),
-                        items = map.value
-                    )
-                }
-                if (list.isEmpty()) {
-                    EmptyScreenState()
-                } else {
-                    CategorizedLazyColumn(
-                        categories = categoryList,
-                        modifier = Modifier.padding(bottom = 80.dp),
-                        navController = navController,
-                        onEvent = onEvent
-                    )
-                }
+                ExercisesLazyColumn(
+                    viewModel = viewModel,
+                    navController = navController,
+                    onEvent = onEvent,
+                    state
+                )
             }
         }
     }
@@ -388,7 +373,7 @@ fun CategoryHeader(
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = text,
+        text = text.lowercase(Locale.ROOT).titlecaseFirstCharIfItIsLowercase(),
         fontSize = 16.sp,
         style = Typography.h3,
         fontWeight = FontWeight.Bold,
@@ -398,7 +383,6 @@ fun CategoryHeader(
             .padding(16.dp)
     )
 }
-
 @Composable
 private fun CategoryItem(
     exercise: Exercise,
@@ -454,6 +438,191 @@ private fun CategorizedLazyColumn(
             }
         }
     }
+}
+
+@Composable
+fun ExercisesLazyColumn(
+    viewModel: HistoryViewModel,
+    navController: NavController,
+    onEvent: (HistoryEvent) -> Unit,
+    state: State<HistoryState>
+) {
+    when(state.value.detailsText) {
+        "" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.exercisesPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Right Side" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.rightPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Left Side" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.leftPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Close Range" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.closePagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Mid Range" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.midPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Three Pointer" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.threePagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Baseline" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.baselinePagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Diagonal" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.diagonalPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Elbow" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.elbowPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+        "Center" -> {
+            val exercisesLazyPagingItems: LazyPagingItems<ExerciseEntity> = viewModel.centerPagingSource.collectAsLazyPagingItems()
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = exercisesLazyPagingItems.itemCount,
+                    key = exercisesLazyPagingItems.itemKey(ExerciseEntity::id),
+                    contentType = exercisesLazyPagingItems.itemContentType { "Exercises" }
+                ) { index: Int ->
+                    val exercise: ExerciseEntity = exercisesLazyPagingItems[index] ?: return@items
+                    CategoryItem(
+                        exercise = exercise.mapToExercise(),
+                        navController,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun String.titlecaseFirstCharIfItIsLowercase() = replaceFirstChar {
+    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
 }
 
 
