@@ -64,11 +64,6 @@ fun HistoryScreen(
     viewModel: HistoryViewModel,
     navController: NavController
 ) {
-    viewModel.onEvent(
-        HistoryEvent.InitialExercises(
-            ExerciseOrder.Default(OrderType.Default),
-        )
-    )
     val state = viewModel.state.collectAsState()
     HistoryScreenContent(onEvent = viewModel::onEvent, state, navController)
 }
@@ -108,7 +103,7 @@ fun HistoryScreenContent(
                 } else {
                     CategorizedLazyColumn(
                         categories = categoryList,
-                        modifier = Modifier.padding(bottom = 80.dp),
+                        modifier = Modifier.padding(bottom = 60.dp),
                         navController = navController,
                         onEvent = onEvent
                     )

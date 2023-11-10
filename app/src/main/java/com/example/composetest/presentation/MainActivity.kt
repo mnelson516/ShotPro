@@ -48,10 +48,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.composetest.R
+import com.example.composetest.domain.ExerciseOrder
+import com.example.composetest.domain.OrderType
 import com.example.composetest.presentation.addexercise.AddExerciseScreen
 import com.example.composetest.presentation.addworkout.AddExerciseEvent
 import com.example.composetest.presentation.addworkout.AddWorkoutViewModel
 import com.example.composetest.presentation.addworkout.WorkoutScreen
+import com.example.composetest.presentation.history.HistoryEvent
 import com.example.composetest.presentation.insights.InsightsScreen
 import com.example.composetest.presentation.history.HistoryScreen
 import com.example.composetest.presentation.history.HistoryScreenDetails
@@ -94,6 +97,11 @@ fun MainScreenView() {
     val insightsViewModel = viewModel<InsightsViewModel>()
     val settingsViewModel = viewModel<SettingsViewModel>()
     settingsViewModel.getTipPreference()
+    historyViewModel.onEvent(
+        HistoryEvent.InitialExercises(
+            ExerciseOrder.Default(OrderType.Default),
+        )
+    )
     val showBottomBar = rememberSaveable { (mutableStateOf(true)) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     when (navBackStackEntry?.destination?.route) {

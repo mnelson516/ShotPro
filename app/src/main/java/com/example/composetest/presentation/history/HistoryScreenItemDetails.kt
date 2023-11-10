@@ -104,7 +104,7 @@ fun DetailsScreenContent(exercise: Exercise, navController: NavController) {
                         .padding(top = 24.dp, start = 16.dp, end = 16.dp)
                 )
                 Text(
-                    text = (DateFormatter.formatDate(exercise.date, LocalDateTime.now())).lowercase().titlecaseFirstCharIfItIsLowercase(),
+                    text = (DateFormatter.formatDateWithYear(exercise.date)),
                     style = Typography.h2,
                     fontSize = 20.sp,
                     color = Color.Black,
@@ -115,7 +115,7 @@ fun DetailsScreenContent(exercise: Exercise, navController: NavController) {
                     painter = painterResource(id = ImageSelector.getImage(exercise)),
                     contentDescription = "Shot Location",
                     modifier = Modifier
-                        .size(250.dp)
+                        .size(300.dp)
                 )
                 DetailsArc(
                     shotsMade = exercise.shotsMade,

@@ -1,5 +1,6 @@
 package com.example.composetest.presentation.util
 
+import com.example.composetest.presentation.history.titlecaseFirstCharIfItIsLowercase
 import java.time.LocalDateTime
 
 object DateFormatter {
@@ -9,5 +10,9 @@ object DateFormatter {
         } else {
             exerciseDate.month.toString() + " " + exerciseDate.dayOfMonth
         }
+    }
+
+    fun formatDateWithYear(exerciseDate: LocalDateTime): String {
+        return exerciseDate.dayOfMonth.toString() + " " + (exerciseDate.month.toString()).lowercase().titlecaseFirstCharIfItIsLowercase() + " " + exerciseDate.year.toString()
     }
 }
