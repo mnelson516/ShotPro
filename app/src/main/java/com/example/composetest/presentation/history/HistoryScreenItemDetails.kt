@@ -104,7 +104,7 @@ fun DetailsScreenContent(exercise: Exercise, navController: NavController) {
                         .padding(top = 24.dp, start = 16.dp, end = 16.dp)
                 )
                 Text(
-                    text = DateFormatter.formatDate(exercise.date, LocalDateTime.now()),
+                    text = (DateFormatter.formatDate(exercise.date, LocalDateTime.now())).lowercase().titlecaseFirstCharIfItIsLowercase(),
                     style = Typography.h2,
                     fontSize = 20.sp,
                     color = Color.Black,

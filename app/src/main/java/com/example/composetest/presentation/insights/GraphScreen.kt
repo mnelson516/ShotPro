@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +40,9 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.example.composetest.R
+import com.example.composetest.presentation.addworkout.AddWorkoutViewModel
 import com.example.composetest.presentation.history.HistoryViewModel
+import com.example.composetest.presentation.model.FieldGoalData
 import com.example.composetest.presentation.theme.NavyBlue
 import com.example.composetest.presentation.theme.NeonOrange
 import com.example.composetest.presentation.theme.Typography
@@ -52,7 +55,11 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GraphScreen(navController: NavController, historyViewModel: HistoryViewModel) {
+fun GraphScreen(
+    navController: NavController,
+    historyViewModel: HistoryViewModel,
+    insightsViewModel: InsightsViewModel
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -86,11 +93,12 @@ fun GraphScreen(navController: NavController, historyViewModel: HistoryViewModel
     ) {
         Column(
             modifier = Modifier
-                .background(NavyBlue)
+                .background(Color.White)
                 .padding(it)
                 .fillMaxSize()
         ) {
             val state = historyViewModel.state.collectAsStateWithLifecycle()
+            val insightState = insightsViewModel.state.collectAsState()
             var increment = 0f
             val map = hashMapOf<Int, String>()
             val list = state.value.exercises
@@ -111,16 +119,26 @@ fun GraphScreen(navController: NavController, historyViewModel: HistoryViewModel
             Text(
                 text = state.value.detailsText,
                 style = Typography.h2,
+                color = Color.Black,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(start = 12.dp, top = 24.dp, bottom = 12.dp)
             )
 
+            Text(
+                text = insightState.value.data?.let { it1 ->
+                    val pair = getFieldGoalDataByCategory(state.value.detailsText,
+                        it1
+                    )
+                    pair.first.toString() + "/" + pair.second.toString()
+                } ?: run {""},
+                style = Typography.h3,
+                color = Color.Black,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(start = 12.dp, top = 24.dp, bottom = 12.dp)
+            )
+
             if (pointList.isNotEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .border(1.dp, NeonOrange, RoundedCornerShape(10.dp))
-                ) {
+                Column {
                     SingleLineChartWithGridLines(pointList, map)
                 }
             }
@@ -182,4 +200,41 @@ fun SingleLineChartWithGridLines(pointsData: List<Point>, pointsMap: HashMap<Int
             .height(350.dp),
         lineChartData = data
     )
+}
+
+fun getFieldGoalDataByCategory(category: String, fieldGoalData: FieldGoalData): Pair<Int, Int> {
+    when (category) {
+        "" -> {
+            return(Pair(fieldGoalData.totalFieldGoalsMade, fieldGoalData.totalFieldGoals))
+        }
+        "Left Side" -> {
+            return(Pair(fieldGoalData.leftSideFieldGoalsMade, fieldGoalData.leftSideFieldGoals))
+        }
+        "Right Side" -> {
+            return(Pair(fieldGoalData.rightSideFieldGoalsMade, fieldGoalData.rightSideFieldGoals))
+        }
+        "Close Range" -> {
+            return(Pair(fieldGoalData.closeRangeFieldGoalsMade, fieldGoalData.closeRangeFieldGoals))
+        }
+        "Mid Range" -> {
+            return(Pair(fieldGoalData.midRangeFieldGoalsMade, fieldGoalData.midRangeFieldGoals))
+        }
+        "Three Pointer" -> {
+            return(Pair(fieldGoalData.threePointFieldGoalsMade, fieldGoalData.threePointFieldGoals))
+        }
+        "Baseline" -> {
+            return(Pair(fieldGoalData.baseLineFieldGoalsMade, fieldGoalData.baseLineFieldGoals))
+        }
+        "Diagonal" -> {
+            return(Pair(fieldGoalData.diagonalFieldGoalsMade, fieldGoalData.diagonalFieldGoals))
+        }
+        "Elbow" -> {
+            return(Pair(fieldGoalData.elbowFieldGoalsMade, fieldGoalData.elbowFieldGoals))
+        }
+        "Center" -> {
+            return(Pair(fieldGoalData.centerFieldGoalsMade, fieldGoalData.centerFieldGoals))
+        } else -> {
+        return(Pair(fieldGoalData.totalFieldGoalsMade, fieldGoalData.totalFieldGoals))
+        }
+    }
 }

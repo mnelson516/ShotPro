@@ -57,6 +57,7 @@ import com.example.composetest.presentation.util.Category
 import com.example.composetest.presentation.util.DateFormatter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun HistoryScreen(
@@ -388,7 +389,7 @@ fun CategoryHeader(
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = text,
+        text = text.lowercase().titlecaseFirstCharIfItIsLowercase(),
         fontSize = 16.sp,
         style = Typography.h3,
         fontWeight = FontWeight.Bold,
@@ -454,6 +455,10 @@ private fun CategorizedLazyColumn(
             }
         }
     }
+}
+
+fun String.titlecaseFirstCharIfItIsLowercase() = replaceFirstChar {
+    if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
 }
 
 

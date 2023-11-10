@@ -176,6 +176,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             HomeScreen(insightsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -184,6 +185,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             HistoryScreen(historyViewModel, navController)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -192,6 +194,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             InsightsScreen(insightsViewModel, historyViewModel, navController)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -200,6 +203,7 @@ fun NavigationGraph(
             exitTransition = { ExitTransition.None}
         ) {
             SettingsScreen(settingsViewModel)
+            viewModel.onEvent(AddExerciseEvent.ClearExercises)
             viewModel.onEvent(AddExerciseEvent.ShowDialog(true))
         }
         composable(
@@ -234,7 +238,7 @@ fun NavigationGraph(
             enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() }
         ) {
-            GraphScreen(navController = navController, historyViewModel)
+            GraphScreen(navController = navController, historyViewModel, insightsViewModel)
         }
     }
 }

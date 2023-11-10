@@ -96,7 +96,7 @@ class HistoryViewModel @Inject constructor(
                         it.filter { exercise -> exercise.side == "Right" }
                     }
                     is ExerciseOrder.CloseRange -> {
-                        it.filter { exercise -> exercise.range == "Baseline" }
+                        it.filter { exercise -> exercise.range == "Close Range" }
                     }
                     is ExerciseOrder.MidRange -> {
                         it.filter { exercise -> exercise.range == "Mid Range" }

@@ -122,9 +122,17 @@ fun AddExerciseScreenContent(
     var rangeSpinnerString by remember { mutableStateOf(spinnerRangeList.first()) }
     var sideSpinnerString by remember { mutableStateOf(spinnerSideList.first()) }
     var showSideSpinner by remember { mutableStateOf(false) }
+    var showRangeSpinner by remember { mutableStateOf(true) }
 
     showSideSpinner = when(locationSpinnerString) {
         "Center" -> {
+            false
+        } else -> {
+            true
+        }
+    }
+    showRangeSpinner = when(locationSpinnerString) {
+        "Elbow" -> {
             false
         } else -> {
             true
@@ -275,20 +283,24 @@ fun AddExerciseScreenContent(
             }
         }
 
-        Text(
-            "Distance",
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
+        AnimatedVisibility(visible = showRangeSpinner) {
+            Column {
+                Text(
+                    "Distance",
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                LocationDropDown(
+                    list = spinnerRangeList,
+                    preselected = spinnerRangeList.first(),
+                    onSelectionChanged = {
+                        rangeSpinnerString = it
+                    },
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                )
+            }
+        }
 
-        LocationDropDown(
-            list = spinnerRangeList,
-            preselected = spinnerRangeList.first(),
-            onSelectionChanged = {
-                rangeSpinnerString = it
-            },
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-        )
 
         Button(
             colors = ButtonDefaults.buttonColors(backgroundColor = NeonOrange),
@@ -313,7 +325,7 @@ fun AddExerciseScreenContent(
                                 shotsMade = shotsMade.toInt(),
                                 totalShots = totalShots.toInt(),
                                 location = locationSpinnerString,
-                                range = rangeSpinnerString
+                                range = if (showRangeSpinner) rangeSpinnerString else "Elbow"
                             )
                         )
                         navController.popBackStack()
