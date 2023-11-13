@@ -1,6 +1,7 @@
 package com.example.shotlogger.presentation.insights
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,19 +26,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.shotlogger.presentation.theme.NavyBlue
 import com.example.shotlogger.presentation.theme.RedColor
 import com.example.shotlogger.presentation.theme.Typography
 import com.example.shotlogger.presentation.theme.WhiteBackground
 import com.example.shotlogger.presentation.util.PercentageConverter
+import com.example.shotlogger.R
 
 @Composable
 @Preview
 fun SemiCirclePreview() {
-    DetailsArc(shotsMade = 10, totalShots = 20, isThreePointer = false)
+    SemicircleView("DUMMY",shotsMade = 10, totalShots = 20, isThreePointer = false, onClick = {})
 }
 
 @Composable
@@ -48,8 +52,7 @@ fun SemicircleView(
     isThreePointer: Boolean,
     onClick: () -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
@@ -57,9 +60,16 @@ fun SemicircleView(
             .background(Color.White)
             .clickable { onClick() }
     ) {
+        val (gauge, textview, arrow) = createRefs()
         SemiCircleArcs(
             percentage = PercentageConverter.convertToPercentage(shotsMade, totalShots).toFloat(),
-            isThreePointer
+            isThreePointer,
+            modifier = Modifier.constrainAs(gauge) {
+                bottom.linkTo(parent.bottom)
+                top.linkTo(parent.top)
+                end.linkTo(parent.end)
+                start.linkTo(parent.start)
+            }
         )
         Text(
             text = text,
@@ -67,15 +77,37 @@ fun SemicircleView(
             fontSize = 24.sp,
             color = Color.Black,
             modifier = Modifier
-                .offset(x = 0.dp, y = (-20).dp)
+                .offset(y = (-20).dp)
+                .constrainAs(textview) {
+                    linkTo(
+                        start = parent.start,
+                        end = parent.end
+                    )
+                    linkTo(
+                        top = gauge.bottom,
+                        bottom = parent.bottom
+                    )
+                }
         )
+        Image(
+            painter = painterResource(id = R.drawable.forward_arrow),
+            contentDescription = "Forward Arrow",
+            modifier = Modifier
+                .size(30.dp)
+                .constrainAs(arrow) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end, margin = 12.dp)
+                    bottom.linkTo(parent.bottom)
+                }
+            )
     }
 }
 
 @Composable
-fun SemiCircleArcs(percentage: Float, isThreePointer: Boolean) {
+fun SemiCircleArcs(percentage: Float, isThreePointer: Boolean, modifier: Modifier) {
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = modifier
     ) {
         Canvas(
             modifier = Modifier
@@ -125,23 +157,34 @@ fun SemiCircleArcs(percentage: Float, isThreePointer: Boolean) {
 @Composable
 fun DetailsArc(shotsMade: Int, totalShots: Int, isThreePointer: Boolean) {
     val percentage = PercentageConverter.convertToPercentage(shotsMade, totalShots).toFloat()
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .border(1.dp, NavyBlue, RoundedCornerShape(10.dp))
             .background(Color.White)
     ) {
+        val (gauge, text) = createRefs()
         Text(
             text = "Results:",
             style = Typography.h2,
             color = Color.Black,
             fontSize = 26.sp,
-            modifier = Modifier.offset(x = 0.dp, y = (18).dp)
+            modifier = Modifier.constrainAs(text) {
+                top.linkTo(parent.top, margin = 16.dp)
+                end.linkTo(parent.end)
+                start.linkTo(parent.start)
+            }
         )
         Box(
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .constrainAs(gauge) {
+                    bottom.linkTo(parent.bottom)
+                    top.linkTo(parent.top, margin = 16.dp)
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+                }
         ) {
             Canvas(
                 modifier = Modifier

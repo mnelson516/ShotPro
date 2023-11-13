@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.Starting" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/navy_blue</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/shot_logger_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.ShotLogger</item>
+    </style>
+</resources>
