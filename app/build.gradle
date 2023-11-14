@@ -8,17 +8,17 @@ plugins {
 }
 
 android {
-    namespace 'com.example.shotlogger'
+    namespace 'com.nelson.shotlogger'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.shotlogger"
+        applicationId "com.nelson.shotlogger"
         minSdk 31
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "com.example.shotlogger.HiltTestRunner"
+        testInstrumentationRunner "com.nelson.shotlogger.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
