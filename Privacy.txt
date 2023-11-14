@@ -2,6 +2,9 @@ Shot Logger Privacy Policy:
 
 Shot Logger does not collect any of the following data:
 - Personally identifiable information (PII), including name, number, email address, etc.
+- Location
+- Web Browsing
+- Device or other IDs
 - Photos and videos
 - Saved audio files
 - Collected data shared with third parties
